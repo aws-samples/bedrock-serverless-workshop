@@ -1,0 +1,285 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 
+  SAM template for serverless bedrock workshop.
+
+Parameters:
+  KendraIndexId:
+    Description: ID of the Kendra Index 
+    Type: String
+
+  BedrockWSS3Bucket:
+    Description: Workshop bucket name
+    Type: String
+
+  
+  ApiGatewayStageName:
+    Default: prod  
+    Description : Stage name for the API Gateway
+    Type: String 
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 60
+    MemorySize: 5000
+    Tracing: Active
+  Api:
+    TracingEnabled: true
+    Cors:
+        AllowMethods: "'GET,POST,OPTIONS'"
+        AllowHeaders: "'Content-Type', 'Authorization', 'X-Forwarded-For', 'X-Api-Key', 'X-Amz-Date', 'X-Amz-Security-Token'"
+        AllowOrigin: "'*'"
+
+Resources:
+# REST API
+  BedrockLambdaApi:
+    Type: AWS::ApiGateway::RestApi
+    Properties:
+      Name: bedrock-workshop
+      Description: Mock Integration REST API demo
+      
+
+  ApiGatewayResource:
+      Type: AWS::ApiGateway::Resource
+      Properties:
+        ParentId: !GetAtt BedrockLambdaApi.RootResourceId
+        PathPart: 'kendra-search-summarize-with-bedrock'
+        RestApiId: !Ref BedrockLambdaApi
+
+  # GET Method with Mock integration
+  RootMethodOption:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      RestApiId: !Ref BedrockLambdaApi
+      ResourceId: !GetAtt BedrockLambdaApi.RootResourceId
+      HttpMethod: OPTIONS
+      AuthorizationType: NONE
+      Integration:
+        Type: MOCK
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        IntegrationResponses:
+          -
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Methods: "'POST,OPTIONS'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+            StatusCode: '200'
+        PassthroughBehavior: WHEN_NO_MATCH
+      MethodResponses:
+        -
+          ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Methods: "'POST,OPTIONS'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          StatusCode: '200'
+          ResponseModels:
+            application/json: Empty
+      ResourceId: !Ref ApiGatewayResource
+      RestApiId: !Ref BedrockLambdaApi
+
+  ApiCognitoAuthorizer:          
+    Type: AWS::ApiGateway::Authorizer
+    Properties:
+      IdentitySource: 'method.request.header.Authorization'
+      Name: ApiCognitoAuthorizer
+      ProviderARNs:
+        - !GetAtt ChatbotUserPool.Arn
+      RestApiId: !Ref BedrockLambdaApi
+      Type: COGNITO_USER_POOLS
+
+  ApiGatewayPostMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      AuthorizationType: COGNITO_USER_POOLS
+      AuthorizerId: !Ref ApiCognitoAuthorizer
+      HttpMethod: POST
+      Integration:
+        IntegrationHttpMethod: POST
+        IntegrationResponses:
+         -
+          ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Methods: "'POST,GET,OPTIONS'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+          StatusCode: '200'
+        Type: AWS_PROXY
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${BedrockLLMFunction.Arn}/invocations"
+      MethodResponses:
+        -
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: true
+            method.response.header.Access-Control-Allow-Methods: true
+            method.response.header.Access-Control-Allow-Origin: true
+          StatusCode: '200'
+      ResourceId: !Ref ApiGatewayResource
+      RestApiId: !Ref BedrockLambdaApi
+
+  ChatbotUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UsernameConfiguration: 
+          CaseSensitive: false
+        AutoVerifiedAttributes:
+          - email
+        Schema:
+          - Name: email
+            AttributeDataType: String
+            Mutable: false
+            Required: true
+          - Name: name
+            AttributeDataType: String
+            Mutable: true
+            Required: true
+  ChatbotUserPoolClient:
+    Type: AWS::Cognito::UserPoolClient
+    Properties:
+      UserPoolId: !Ref ChatbotUserPool
+      ExplicitAuthFlows:
+        - ALLOW_USER_PASSWORD_AUTH
+        - ALLOW_REFRESH_TOKEN_AUTH
+        - ALLOW_USER_SRP_AUTH
+        - ALLOW_CUSTOM_AUTH
+      AllowedOAuthFlowsUserPoolClient: true
+      CallbackURLs:
+        - http://localhost:3000
+      AllowedOAuthFlows:
+        - code
+        - implicit
+      AllowedOAuthScopes:
+        - phone
+        - email
+        - openid
+        - profile
+      SupportedIdentityProviders:
+        - COGNITO
+  
+  CognitoUserCreateFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: bedrockFunc
+      Handler: cognitouser.lambda_handler
+      Runtime: python3.10
+      Architectures:
+        - x86_64
+    #  Layers:
+    #    - !Ref boto3BedrockLib
+      Environment:
+        Variables:
+          Cognito_UserPool: !Ref ChatbotUserPool
+          Cognito_ClientID: !Ref ChatbotUserPoolClient 
+      Policies: 
+       - Version: '2012-10-17'
+         Statement: 
+          - Effect: Allow
+            Action:
+              - secretsmanager:Get*
+              - secretsmanager:Describe*
+              - secretsmanager:CreateSecret
+              - secretsmanager:DeleteSecret
+              - secretsmanager:UpdateSecret
+            Resource:
+              - !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:*"
+          - Effect: Allow
+            Action:
+              - cognito-idp:Describe*
+              - cognito-idp:CreateUserPool
+              - cognito-idp:CreateUserPoolClient
+              - cognito-idp:DeleteUserPool
+              - cognito-idp:UpdateUserPool
+              - cognito-idp:Admin*
+            Resource:
+              - !Sub "arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/*"
+              - !Sub "arn:aws:cognito-idp:${AWS::Region}:${AWS::AccountId}:userpool/*/*"
+
+  DeploymentCustomResource:
+    Type: Custom::AppConfiguration
+    Properties:
+      ServiceToken: !GetAtt CognitoUserCreateFunction.Arn
+
+  ApiGatewayDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:   ApiGatewayPostMethod
+    Properties:
+      Description: Lambda API Deployment
+      RestApiId: !Ref BedrockLambdaApi
+
+  ApiGatewayStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      DeploymentId: !Ref ApiGatewayDeployment
+      Description: Lambda API Stage
+      RestApiId: !Ref BedrockLambdaApi
+      StageName: !Ref ApiGatewayStageName
+
+  BedrockFunctionPermission:
+        Type: AWS::Lambda::Permission
+        DependsOn:
+        - BedrockLambdaApi
+        Properties:
+          Action: lambda:InvokeFunction
+          FunctionName: !Ref BedrockLLMFunction
+          Principal: apigateway.amazonaws.com
+
+  BedrockLLMFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: bedrockFunc
+      Handler: bedrockllm.lambda_handler
+      Runtime: python3.10
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          KENDRA_INDEX_ID: !Ref KendraIndexId
+          S3_BUCKET_NAME: !Ref BedrockWSS3Bucket 
+      Policies: 
+       - Version: '2012-10-17'
+         Statement: 
+          - Effect: Allow
+            Action:
+              - kendra:Query
+              - kendra:GetQuerySuggestions
+              - kendra:Retrieve
+            Resource:
+              - !Sub "arn:aws:kendra:${AWS::Region}:${AWS::AccountId}:index/${KendraIndexId}"
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:ListBucket
+              - s3:ListBucketVersions
+              - s3:DescribeBucket
+            Resource:
+              - !Sub "arn:aws:s3:::${BedrockWSS3Bucket}/*"
+              - !Sub "arn:aws:s3:::${BedrockWSS3Bucket}"
+          - Effect: Allow
+            Action:
+              - bedrock:ListFoundationModels
+              - bedrock:GetFoundationModel
+              - bedrock:InvokeModel
+              - bedrock:InvokeModelWithResponseStream
+              - bedrock:ListTagsForResource
+              - bedrock:UntagResource
+              - bedrock:TagResource
+              - bedrock:AcceptAcknowledgement
+              - bedrock:GetModelPermission
+              - bedrock:GetModelInvocationLogging
+              - bedrock:PutModelInvocationLogging
+            Resource: "*"
+          
+Outputs:
+    CognitoUserPool:
+      Description: Cognito User Pool
+      Value:
+        Fn::Sub: "${ChatbotUserPool}"
+    
+    CongnitoUserPoolClientID:
+      Description: Cognito User Pool Client ID
+      Value:
+        Fn::Sub: "${ChatbotUserPoolClient}"
+        
+    BedrockApiUrl:
+      Description: API Gateway endpoint URL for the Bedrock Lambda Function
+      Value:
+        Fn::Sub: "https://${BedrockLambdaApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/prod"
