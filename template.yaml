@@ -161,6 +161,7 @@ Resources:
       CodeUri: bedrockFunc
       Handler: cognitouser.lambda_handler
       Runtime: python3.10
+      MemorySize: 2048
       Architectures:
         - x86_64
     #  Layers:
@@ -228,6 +229,7 @@ Resources:
       CodeUri: bedrockFunc
       Handler: bedrockllm.lambda_handler
       Runtime: python3.10
+      MemorySize: 2048
       Architectures:
         - x86_64
       Environment:

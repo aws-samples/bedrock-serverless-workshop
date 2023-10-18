@@ -1,0 +1,218 @@
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups: []
+    ParameterLabels: {}
+  Comments: Prepares Account User Access for GenAI Builder Event
+  CreatedBy: Carter Meyers (AWS)
+  Description: GenAI Builder Event Prep - v1.0
+  LastUpdated: October 18, 2023
+  Version: v1.0
+Outputs:
+  User01:
+    Value: !Join
+      - ''
+      - - 'Sign-in URL: https://'
+        - !Ref 'AWS::AccountId'
+        - '.signin.aws.amazon.com/console | Username: '
+        - !Ref 'User01'
+        - ' | Password: '
+        - GenAIBuilder!
+  User02:
+    Value: !Join
+      - ''
+      - - 'Sign-in URL: https://'
+        - !Ref 'AWS::AccountId'
+        - '.signin.aws.amazon.com/console | Username: '
+        - !Ref 'User02'
+        - ' | Password: '
+        - GenAIBuilder!
+  User03:
+    Value: !Join
+      - ''
+      - - 'Sign-in URL: https://'
+        - !Ref 'AWS::AccountId'
+        - '.signin.aws.amazon.com/console | Username: '
+        - !Ref 'User03'
+        - ' | Password: '
+        - GenAIBuilder!
+  User04:
+    Value: !Join
+      - ''
+      - - 'Sign-in URL: https://'
+        - !Ref 'AWS::AccountId'
+        - '.signin.aws.amazon.com/console | Username: '
+        - !Ref 'User04'
+        - ' | Password: '
+        - GenAIBuilder!
+  User05:
+    Value: !Join
+      - ''
+      - - 'Sign-in URL: https://'
+        - !Ref 'AWS::AccountId'
+        - '.signin.aws.amazon.com/console | Username: '
+        - !Ref 'User05'
+        - ' | Password: '
+        - GenAIBuilder!
+  User06:
+    Value: !Join
+      - ''
+      - - 'Sign-in URL: https://'
+        - !Ref 'AWS::AccountId'
+        - '.signin.aws.amazon.com/console | Username: '
+        - !Ref 'User06'
+        - ' | Password: '
+        - GenAIBuilder!
+  User07:
+    Value: !Join
+      - ''
+      - - 'Sign-in URL: https://'
+        - !Ref 'AWS::AccountId'
+        - '.signin.aws.amazon.com/console | Username: '
+        - !Ref 'User07'
+        - ' | Password: '
+        - GenAIBuilder!
+  User08:
+    Value: !Join
+      - ''
+      - - 'Sign-in URL: https://'
+        - !Ref 'AWS::AccountId'
+        - '.signin.aws.amazon.com/console | Username: '
+        - !Ref 'User08'
+        - ' | Password: '
+        - GenAIBuilder!
+  User09:
+    Value: !Join
+      - ''
+      - - 'Sign-in URL: https://'
+        - !Ref 'AWS::AccountId'
+        - '.signin.aws.amazon.com/console | Username: '
+        - !Ref 'User09'
+        - ' | Password: '
+        - GenAIBuilder!
+  User10:
+    Value: !Join
+      - ''
+      - - 'Sign-in URL: https://'
+        - !Ref 'AWS::AccountId'
+        - '.signin.aws.amazon.com/console | Username: '
+        - !Ref 'User10'
+        - ' | Password: '
+        - GenAIBuilder!
+Resources:
+  IAMGroup:
+    Properties:
+      ManagedPolicyArns: []
+      Policies:
+        - PolicyDocument:
+            Statement:
+              - Action:
+                  - sns:*
+                  - cognito-identity:*
+                  - s3:*
+                  - apigateway:*
+                  - cloudformation:*
+                  - cloud9:*
+                  - amplify:*
+                  - iam:*
+                  - kendra:*
+                  - serverlessrepo:*
+                  - lambda:*
+                  - logs:*
+                  - cloudwatch:*
+                  - ec2:*
+                  - cognito-idp:*
+                  - secretsmanager:*
+                  - bedrock:*
+                Effect: Allow
+                Resource:
+                  - '*'
+              - Action:
+                  - bedrock:UpdateProvisionedModelThroughput
+                  - bedrock:DeleteProvisionedModelThroughput
+                  - bedrock:CreateProvisionedModelThroughput
+                Effect: Deny
+                Resource:
+                  - '*'
+          PolicyName: gen-ai-builder-access
+    Type: AWS::IAM::Group
+  
+  User01:
+    Properties:
+      Groups:
+        - !Ref 'IAMGroup'
+      LoginProfile:
+        Password: GenAIBuilder!
+        PasswordResetRequired: false
+    Type: AWS::IAM::User
+  User02:
+    Properties:
+      Groups:
+        - !Ref 'IAMGroup'
+      LoginProfile:
+        Password: GenAIBuilder!
+        PasswordResetRequired: false
+    Type: AWS::IAM::User
+  User03:
+    Properties:
+      Groups:
+        - !Ref 'IAMGroup'
+      LoginProfile:
+        Password: GenAIBuilder!
+        PasswordResetRequired: false
+    Type: AWS::IAM::User
+  User04:
+    Properties:
+      Groups:
+        - !Ref 'IAMGroup'
+      LoginProfile:
+        Password: GenAIBuilder!
+        PasswordResetRequired: false
+    Type: AWS::IAM::User
+  User05:
+    Properties:
+      Groups:
+        - !Ref 'IAMGroup'
+      LoginProfile:
+        Password: GenAIBuilder!
+        PasswordResetRequired: false
+    Type: AWS::IAM::User
+  User06:
+    Properties:
+      Groups:
+        - !Ref 'IAMGroup'
+      LoginProfile:
+        Password: GenAIBuilder!
+        PasswordResetRequired: false
+    Type: AWS::IAM::User
+  User07:
+    Properties:
+      Groups:
+        - !Ref 'IAMGroup'
+      LoginProfile:
+        Password: GenAIBuilder!
+        PasswordResetRequired: false
+    Type: AWS::IAM::User
+  User08:
+    Properties:
+      Groups:
+        - !Ref 'IAMGroup'
+      LoginProfile:
+        Password: GenAIBuilder!
+        PasswordResetRequired: false
+    Type: AWS::IAM::User
+  User09:
+    Properties:
+      Groups:
+        - !Ref 'IAMGroup'
+      LoginProfile:
+        Password: GenAIBuilder!
+        PasswordResetRequired: false
+    Type: AWS::IAM::User
+  User10:
+    Properties:
+      Groups:
+        - !Ref 'IAMGroup'
+      LoginProfile:
+        Password: GenAIBuilder!
+        PasswordResetRequired: false
+    Type: AWS::IAM::User
