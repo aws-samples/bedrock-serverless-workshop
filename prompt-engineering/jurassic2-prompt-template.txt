@@ -1,2 +1,8 @@
+Your job is to summarize based on the question asked.
+If the question is not found within the context, say 'I am sorry, I don't have enough data to summarize'. 
+
 Context: {context}
 Question: {question}
+--
+
+Summary:
