@@ -8,17 +8,18 @@ import requests
 REGION = os.environ['AWS_REGION']
 ChatbotUserPool = os.getenv("Cognito_UserPool", None)
 ChatbotUserPoolClient = os.getenv("Cognito_ClientID", None)
+secrets_name = os.getenv("SECRET_ID", 'ui-credentials')
 user_id = os.getenv("USER_ID", 'bedrock')
 
+
 cognitoidentityserviceprovider = boto3.client('cognito-idp', region_name=REGION)
-secrets_name = 'ws-credentials'
 
 def generate_random_password(length=12):
     # Define character sets
     lowercase_letters = string.ascii_lowercase
     uppercase_letters = string.ascii_uppercase
     digits = string.digits
-    special_characters = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~'
+    special_characters = '!$@'
 
     # Ensure that the password includes at least one special character
     special_char = secrets.choice(special_characters)
@@ -87,7 +88,7 @@ def lambda_handler(event, context):
             status_msg = 'SUCCESS'            
         else:
             password = generate_random_password()
-            #print('password:', password)
+            print('password:', password)
             create_secret(password)
             
             try:

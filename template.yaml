@@ -164,12 +164,12 @@ Resources:
       MemorySize: 2048
       Architectures:
         - x86_64
-    #  Layers:
-    #    - !Ref boto3BedrockLib
       Environment:
         Variables:
           Cognito_UserPool: !Ref ChatbotUserPool
-          Cognito_ClientID: !Ref ChatbotUserPoolClient 
+          Cognito_ClientID: !Ref ChatbotUserPoolClient
+          SECRET_ID: 
+            Fn::Sub: "ui-credentials-${BedrockLambdaApi}"
       Policies: 
        - Version: '2012-10-17'
          Statement: 

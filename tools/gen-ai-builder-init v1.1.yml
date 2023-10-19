@@ -122,6 +122,7 @@ Resources:
                   - ec2:*
                   - cognito-idp:*
                   - secretsmanager:*
+                  - aws-marketplace:*
                   - bedrock:*
                 Effect: Allow
                 Resource:
