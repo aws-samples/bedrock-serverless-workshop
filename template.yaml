@@ -285,3 +285,8 @@ Outputs:
       Description: API Gateway endpoint URL for the Bedrock Lambda Function
       Value:
         Fn::Sub: "https://${BedrockLambdaApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}/prod"
+
+    SecretsName:
+      Description: Secrets name to retrieve ui credentials
+      Value:
+        Fn::Sub: "ui-credentials-${BedrockLambdaApi}"
