@@ -86,13 +86,13 @@
           <img class="card-img-top" src="" alt="" />
 
           <div class="card-body">
-            <label style="font-weight:lighter;color:grey">What is federal funds rate as of July 2023?</label>
+            <label style="font-weight:lighter;color:grey">What is federal funds rate as of September 2023?</label>
+            <br />
+            <label style="font-weight:lighter;color:grey">What is federal funds rate as of September 2024?</label>
             <br />
             <label style="font-weight:lighter;color:grey" >What are the demographic trends in dental space?</label>
             <br />
-            <label style="font-weight:lighter; color:grey" >What are the sustainability goals for year 2025?</label>
-            <br />
-            <label style="font-weight:lighter; color:grey" >What are all movies released on Netflix for year 2023?</label>
+            <label style="font-weight:lighter; color:grey" >What are Amazon sustainability goals by year 2040?</label>
           </div>
         </div>
       </div>
