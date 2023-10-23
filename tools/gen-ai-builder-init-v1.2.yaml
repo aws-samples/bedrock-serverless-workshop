@@ -4,8 +4,8 @@ Metadata:
     ParameterLabels: {}
   Comments: Prepares Account User Access for GenAI Builder Event
   CreatedBy: Carter Meyers (AWS)
-  Description: GenAI Builder Event Prep - v1.0
-  LastUpdated: October 18, 2023
+  Description: GenAI Builder Event Prep - v1.2
+  LastUpdated: October 21, 2023
   Version: v1.0
 Outputs:
   User01:
@@ -53,51 +53,6 @@ Outputs:
         - !Ref 'User05'
         - ' | Password: '
         - GenAIBuilder!
-  User06:
-    Value: !Join
-      - ''
-      - - 'Sign-in URL: https://'
-        - !Ref 'AWS::AccountId'
-        - '.signin.aws.amazon.com/console | Username: '
-        - !Ref 'User06'
-        - ' | Password: '
-        - GenAIBuilder!
-  User07:
-    Value: !Join
-      - ''
-      - - 'Sign-in URL: https://'
-        - !Ref 'AWS::AccountId'
-        - '.signin.aws.amazon.com/console | Username: '
-        - !Ref 'User07'
-        - ' | Password: '
-        - GenAIBuilder!
-  User08:
-    Value: !Join
-      - ''
-      - - 'Sign-in URL: https://'
-        - !Ref 'AWS::AccountId'
-        - '.signin.aws.amazon.com/console | Username: '
-        - !Ref 'User08'
-        - ' | Password: '
-        - GenAIBuilder!
-  User09:
-    Value: !Join
-      - ''
-      - - 'Sign-in URL: https://'
-        - !Ref 'AWS::AccountId'
-        - '.signin.aws.amazon.com/console | Username: '
-        - !Ref 'User09'
-        - ' | Password: '
-        - GenAIBuilder!
-  User10:
-    Value: !Join
-      - ''
-      - - 'Sign-in URL: https://'
-        - !Ref 'AWS::AccountId'
-        - '.signin.aws.amazon.com/console | Username: '
-        - !Ref 'User10'
-        - ' | Password: '
-        - GenAIBuilder!
 Resources:
   IAMGroup:
     Properties:
@@ -122,6 +77,7 @@ Resources:
                   - ec2:*
                   - cognito-idp:*
                   - secretsmanager:*
+                  - aws-marketplace:*
                   - bedrock:*
                 Effect: Allow
                 Resource:
@@ -138,6 +94,7 @@ Resources:
   
   User01:
     Properties:
+      UserName: User01
       Groups:
         - !Ref 'IAMGroup'
       LoginProfile:
@@ -146,6 +103,7 @@ Resources:
     Type: AWS::IAM::User
   User02:
     Properties:
+      UserName: User02
       Groups:
         - !Ref 'IAMGroup'
       LoginProfile:
@@ -154,6 +112,7 @@ Resources:
     Type: AWS::IAM::User
   User03:
     Properties:
+      UserName: User03
       Groups:
         - !Ref 'IAMGroup'
       LoginProfile:
@@ -162,6 +121,7 @@ Resources:
     Type: AWS::IAM::User
   User04:
     Properties:
+      UserName: User04
       Groups:
         - !Ref 'IAMGroup'
       LoginProfile:
@@ -170,49 +130,11 @@ Resources:
     Type: AWS::IAM::User
   User05:
     Properties:
+      UserName: User05
       Groups:
         - !Ref 'IAMGroup'
       LoginProfile:
         Password: GenAIBuilder!
         PasswordResetRequired: false
     Type: AWS::IAM::User
-  User06:
-    Properties:
-      Groups:
-        - !Ref 'IAMGroup'
-      LoginProfile:
-        Password: GenAIBuilder!
-        PasswordResetRequired: false
-    Type: AWS::IAM::User
-  User07:
-    Properties:
-      Groups:
-        - !Ref 'IAMGroup'
-      LoginProfile:
-        Password: GenAIBuilder!
-        PasswordResetRequired: false
-    Type: AWS::IAM::User
-  User08:
-    Properties:
-      Groups:
-        - !Ref 'IAMGroup'
-      LoginProfile:
-        Password: GenAIBuilder!
-        PasswordResetRequired: false
-    Type: AWS::IAM::User
-  User09:
-    Properties:
-      Groups:
-        - !Ref 'IAMGroup'
-      LoginProfile:
-        Password: GenAIBuilder!
-        PasswordResetRequired: false
-    Type: AWS::IAM::User
-  User10:
-    Properties:
-      Groups:
-        - !Ref 'IAMGroup'
-      LoginProfile:
-        Password: GenAIBuilder!
-        PasswordResetRequired: false
-    Type: AWS::IAM::User
+  
