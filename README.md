@@ -11,7 +11,7 @@ The project includes the following files and folders.
 
 To deploy and test this code, visit the following Amazon Bedrock workshop.
 
-See the [Creating a Serverless Chatbot using Amazon Bedrock](https://studio.us-east-1.prod.workshops.aws/preview/27eb3134-4f33-4689-bb73-269e4273947a/builds/48e535f7-43d6-4498-b6dc-95530d0002b3/en-US) 
+See the [Creating a Serverless Chatbot using Amazon Bedrock](https://catalog.us-east-1.prod.workshops.aws/workshops/27eb3134-4f33-4689-bb73-269e4273947a) 
 
 ## Resources
 
