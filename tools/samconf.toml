@@ -7,4 +7,4 @@ stack_name = "<SAMStackName>"
 resolve_s3 = true
 s3_prefix = "<SAMStackName>"
 capabilities = "CAPABILITY_IAM"
-parameter_overrides = "StackName=\"\" KendraIndexId=\"<KendraIndexId>\" BedrockWSS3Bucket=\"<S2BucketName>\" ApiGatewayStageName=\"prod\""
+parameter_overrides = "StackName=\"\" KendraIndexId=\"<KendraIndexId>\" BedrockWSS3Bucket=\"<S3BucketName>\" ApiGatewayStageName=\"prod\""
