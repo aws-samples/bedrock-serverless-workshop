@@ -15,7 +15,8 @@ cd ~/environment/bedrock-serverless-workshop/tools
 chmod +x resize.sh
 ./resize.sh 20
 
-echo "Updae node js to version 16"
+echo "Update node js to version 16"
+source "$HOME/.nvm/nvm.sh"
 nvm install 16
 nvm use 16
 node --version
@@ -76,7 +77,7 @@ mv dist build
 amplify init --yes
 
 
-echo "Add hosting"
+echo "Add hosting, hit enter key if it prompts for action, use just default"
 amplify add hosting parameters.json
 
 echo "Publish the amplify project"
