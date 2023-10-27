@@ -6,9 +6,10 @@ import VueAxios from 'vue-axios'
 
 Vue.config.productionTip = false
 
-axios.defaults.baseURL = "Replace with API Gateway URL"
-Vue.prototype.$UserPoolId = 'Replace COGNITO User Pool'
-Vue.prototype.$ClientId = 'Replace User Pool App Client ID'
+//These values are replaces during amplify setup
+axios.defaults.baseURL = "<ApiGatewayUrl>"
+Vue.prototype.$UserPoolId = '<CognitoUserPoolId>'
+Vue.prototype.$ClientId = '<UserPoolClientId>'
 
 Vue.use(VueAxios, axios)
 
