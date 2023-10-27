@@ -11,9 +11,9 @@ echo "Install jq for cli query operations"
 sudo apt install -y jq
 
 #echo "Resize the Cloud9 to 20 GB space"
-cd ~/environment/bedrock-serverless-workshop/tools
-chmod +x resize.sh
-./resize.sh 20
+#cd ~/environment/bedrock-serverless-workshop/tools
+#chmod +x resize.sh
+#./resize.sh 20
 
 echo "Update node js to version 16"
 source "$HOME/.nvm/nvm.sh"
