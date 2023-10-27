@@ -3,8 +3,8 @@ version = 0.1
 [default.deploy]
 [default.deploy.parameters]
 region = "<AWS_REGION>"
-stack_name = "<$SAMStackName>"
+stack_name = "<SAMStackName>"
 resolve_s3 = true
-s3_prefix = "<$SAMStackName>"
+s3_prefix = "<SAMStackName>"
 capabilities = "CAPABILITY_IAM"
 parameter_overrides = "StackName=\"\" KendraIndexId=\"<KendraIndexId>\" BedrockWSS3Bucket=\"<S2BucketName>\" ApiGatewayStageName=\"prod\""
