@@ -1,8 +1,12 @@
 #!/bin/bash
-# This is a simple Bash script
 echo "Preparing Cloud9 for project deploymnet"
+# Check if 'CFNStackName' is set in the environment variables
+if [ -z "$CFNStackName" ]; then
+    echo "Error: 'CFNStackName' environment variable is not set. Please set it and run the script."
+    exit 1
+fi
 echo "CFN Start up stack name: $CFNStackName"
-echo 'If no stack name set, please set this first to proceed next steps'
+
 
 echo "Update ubantu os"
 sudo apt-get update
@@ -23,6 +27,7 @@ node --version
 
 echo "Set region"
 export AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r '.region')
+echo "AWS Region is $AWS_REGION"
 
 echo "Build the backend code using sam build"
 cd ~/environment/bedrock-serverless-workshop
@@ -51,11 +56,15 @@ sed -Ei "s|<AWS_REGION>|${AWS_REGION}|g" ./samconfig.toml
 echo "Deploy app with sam deploy"
 sam deploy
 
-echo "export few more parameters from the sam stack output"
+echo "Export few more parameters from the sam stack output"
 export BedrockApiUrl=$(aws cloudformation describe-stacks --stack-name ${SAMStackName} --query "Stacks[0].Outputs[?OutputKey=='BedrockApiUrl'].OutputValue" --output text)
 export UserPoolId=$(aws cloudformation describe-stacks --stack-name ${SAMStackName} --query "Stacks[0].Outputs[?OutputKey=='CognitoUserPool'].OutputValue" --output text)
 export UserPoolClientId=$(aws cloudformation describe-stacks --stack-name ${SAMStackName} --query "Stacks[0].Outputs[?OutputKey=='CongnitoUserPoolClientID'].OutputValue" --output text)
 export SecretName=$(aws cloudformation describe-stacks --stack-name ${SAMStackName} --query "Stacks[0].Outputs[?OutputKey=='SecretsName'].OutputValue" --output text)
+echo "API Gateway endpoint: $BedrockApiUrl"
+echo "Cognito user pool id: $UserPoolId"
+echo "Cognito client id: $UserPoolClientId"
+echo "Secret name: $SecretName"
 
 # Replace values in ./backend/samconfig.toml
 sed -Ei "s|<ApiGatewayUrl>|${BedrockApiUrl}|g" ./frontend/src/main.js
@@ -77,7 +86,7 @@ mv dist build
 amplify init --yes
 
 
-echo "Add hosting, hit enter key if it prompts for action, use just default"
+echo "Add hosting, hit enter key if it prompts for action, use default"
 amplify add hosting parameters.json
 
 echo "Publish the amplify project"
@@ -85,4 +94,3 @@ amplify publish --yes
 
 echo "Save the user_id and password to login to UI"
 aws secretsmanager get-secret-value --secret-id $SecretName | jq -r .SecretString
-
