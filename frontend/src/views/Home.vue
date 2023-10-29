@@ -23,7 +23,6 @@
                   <div class="select">
                   <select id="model" name="model">
                     <option value="anthropic.claude-v2" selected>Claude 2</option>
-                    <option value="ai21.j2-mid-v1">Jurassic 2 Mid</option>
                     <option value="ai21.j2-ultra-v1">Jurassic 2 Ultra</option>
                   </select>
                   </div>
