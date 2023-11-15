@@ -1,6 +1,4 @@
 <style>
-
-
 @import '../app.css';
 </style>
 <template>
@@ -17,7 +15,7 @@
             <table>
               <tr>
                 <td >
-                <label for="model">Model</label>&nbsp;
+                <label for="model">Model:</label>&nbsp;
                 </td>
                 <td>
                   <div class="select">
@@ -29,7 +27,7 @@
                 </td>
               
                 <td>
-                &nbsp;  <label for="model">Temperature</label>&nbsp;
+                &nbsp;  <label for="model">Temperature:</label>&nbsp;
                 </td>
                 <td>
                   <div class="select">
@@ -42,14 +40,14 @@
                 </td>
               
                 <td>
-                &nbsp;  <label for="model">Token</label>&nbsp;
+                &nbsp;  <label for="model">Tokens:</label>&nbsp;
                 </td>
                 <td>
                   <div class="select">
                   <select id="token" name="token">
-                    <option value="1024">1024</option>
-                    <option value="2048" selected>2048</option>
-                    <option value="4096">4096</option>
+                    <option value="100">100</option>
+                    <option value="150" selected>150</option>
+                    <option value="250">250</option>
                   </select>
                   </div>
                 </td>
