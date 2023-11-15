@@ -66,7 +66,7 @@ def lambda_handler(event, context):
                 "max_tokens_to_sample": int(maxTokens),
                 "temperature": float(temperature),
                 "top_k": 250,
-                "top_p": 1
+                "top_p": 0.1
             }
             PROMPT_TEMPLATE = 'prompt-engineering/claude-prompt-template.txt'
         elif bedrock_model_id == 'amazon.titan-text-express-v1':
