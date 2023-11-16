@@ -46,8 +46,11 @@
                   <div class="select">
                   <select id="token" name="token">
                     <option value="100">100</option>
-                    <option value="150" selected>150</option>
+                    <option value="150">150</option>
                     <option value="250">250</option>
+                    <option value="500" selected>500</option>
+                    <option value="1000">1000</option>
+                    <option value="2000">2000</option>
                   </select>
                   </div>
                 </td>
@@ -56,7 +59,7 @@
           <br />
             <form @submit="formSubmit">
               <strong>Query</strong> <br />
-              <input type="text" class="form-control" v-model="name"/>
+              <input type="text" class="form-control" v-model="name" placeholder="Type your question..." />
               <br />
               <button class="btn btn-success">Ask Question</button>
             </form>
