@@ -65,15 +65,14 @@
             </form>
             <br />
             <div id="loading" style="display: none">
-              <strong>loading...</strong>
+              <strong>Loading...</strong>
             </div>
-            <div id="divresult" class="text-secondary mb-2" style="display: none; padding: 3px;">
-              <Strong style="white-space: pre-line; text-align: left">Response: </Strong> <span style="white-space: pre-line; text-align: left">
-                {{output.answer}}</span>
+            <div id="divresult" class="text-secondary mb-2" style="display: block; padding: 3px;">
+              <strong v-if="output.answer" style="display: block; white-space: pre-line; text-align: left">Response: </strong>
+              <span v-if="output.answer" style="white-space: pre-line; text-align: left">{{output.answer}}</span>
               <br />
-              <Strong text-align: left>References: </Strong>
-             <span style="white-space: pre-line; text-align: left">
-              {{output.source_documents }}</span> 
+              <strong v-if="output.source_documents" style="display: block; text-align: left">References: </strong>
+              <span v-if="output.source_documents" style="white-space: pre-line; text-align: left">{{output.source_documents }}</span>
             </div>
           </div>
         </div>
@@ -145,7 +144,7 @@ import { getAuthToken } from './../utils/auth'
     'Authorization': getAuthToken()
   }
 };
-                this.axios.post('/kendra-search-summarize-with-bedrock',
+     this.axios.post('/kendra-search-summarize-with-bedrock',
      json, config).then(function(response) {
 
                     img.style.display = "none";
