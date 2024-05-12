@@ -2,7 +2,7 @@
 #!/bin/bash
 
 # Specify the desired volume size in GiB as a command line argument. If not specified, default to 20 GiB.
-SIZE=${1:-20}
+SIZE=${1:-40}
 
 # Get the ID of the environment host Amazon EC2 instance.
 TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 60")

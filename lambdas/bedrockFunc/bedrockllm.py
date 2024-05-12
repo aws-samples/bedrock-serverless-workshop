@@ -65,8 +65,15 @@ def lambda_handler(event, context):
             model_args = {
                 "max_tokens_to_sample": int(maxTokens),
                 "temperature": float(temperature),
-                "top_k": 250,
+                "top_k": 50,
                 "top_p": 0.1
+            }
+            PROMPT_TEMPLATE = 'prompt-engineering/claude-prompt-template.txt'
+        elif bedrock_model_id == 'anthropic.claude-3-sonnet-20240229-v1:0':
+            model_args = {
+                "anthropic_version": "bedrock-2023-05-31",
+                "temperature": float(temperature),
+                "top_k": 250
             }
             PROMPT_TEMPLATE = 'prompt-engineering/claude-prompt-template.txt'
         elif bedrock_model_id == 'amazon.titan-text-express-v1':
@@ -83,12 +90,28 @@ def lambda_handler(event, context):
                 "topP":1
             }
             PROMPT_TEMPLATE = 'prompt-engineering/jurassic2-prompt-template.txt'
+        elif bedrock_model_id == 'meta.llama2-13b-chat-v1':
+            model_args = {
+                "max_gen_len": int(maxTokens),
+                "temperature": float(temperature),
+                "top_p":0.9
+            }
+            PROMPT_TEMPLATE = 'prompt-engineering/llama-prompt-template.txt'
+        elif bedrock_model_id == 'mistral.mistral-7b-instruct-v0:2':
+            model_args = {
+                "max_tokens": int(maxTokens),
+                "temperature": float(temperature),
+                "top_p":0.9,
+                "top_k":50
+            }
+            PROMPT_TEMPLATE = 'prompt-engineering/llama-prompt-template.txt'
         else:
             model_args = {
                 "max_tokens_to_sample": int(maxTokens),
                 "temperature": float(temperature)
             }
-            PROMPT_TEMPLATE = os.environ["PROMPT_TEMPLATE_CLAUDE"]
+        
+        logging.info(f"Model orgs: {model_args}")
 
         # Read the prompt template from S3 bucket
         s3 = boto3.resource('s3')
@@ -110,10 +133,10 @@ def lambda_handler(event, context):
                                     chain_type="stuff", 
                                     retriever=AmazonKendraRetriever(index_id=KENDRA_INDEX_ID),
                                     return_source_documents=True,
-                                    chain_type_kwargs={"prompt": PROMPT, "verbose": True},
-                                    verbose=True)
+                                    chain_type_kwargs={"prompt": PROMPT, "verbose": False},
+                                    verbose=False)
         
-        response = qa(question, return_only_outputs=False)
+        response = qa(question, return_only_outputs=True)
         
         source_documents = response.get('source_documents')
         source_docs = []
@@ -132,7 +155,6 @@ def lambda_handler(event, context):
             "body": json.dumps(output)
         }
 
-        logging.info('new bedrock version tested successfully')
     except Exception as e:
         print('Error: ' + str(e))
         traceback.print_exc()

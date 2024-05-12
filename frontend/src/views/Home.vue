@@ -21,6 +21,9 @@
                   <div class="select">
                   <select id="model" name="model">
                     <option value="anthropic.claude-v2" selected>Claude 2</option>
+                    <option value="anthropic.claude-3-sonnet-20240229-v1:0" selected>Claude 3 Sonnet</option>
+                    <option value="meta.llama2-13b-chat-v1">Llama 2 Chat 13B</option>
+                    <option value="mistral.mistral-7b-instruct-v0:2">Mistral 7B</option>
                     <option value="ai21.j2-ultra-v1">Jurassic 2 Ultra</option>
                   </select>
                   </div>

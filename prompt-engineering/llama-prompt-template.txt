@@ -1,0 +1,7 @@
+ Context information is below.
+---------------------
+{context}
+---------------------
+Given the context information and not prior knowledge, answer the query.
+Query: {question}
+Answer: 
