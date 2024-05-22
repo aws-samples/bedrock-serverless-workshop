@@ -107,7 +107,6 @@ def invoke_llama(model_id, prompt, temperature, max_tokens):
     print(f"Invoking llam model {model_id}" )
     print(f"max_tokens {max_tokens}" )
     try:
-        #instruction = f"<s>[INST] You are a very intelligent bot with exceptional critical thinking[/INST]"
         instruction = f"<s>[INST]You are a very intelligent bot with exceptional critical thinking, help answering the question, here is the question: {prompt} [/INST]"
         prompt_template = f"{instruction}\n {prompt}" 
         print(f"Prompt template {prompt_template}" )

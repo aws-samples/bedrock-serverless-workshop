@@ -77,6 +77,7 @@ cd ~/environment/bedrock-serverless-workshop/frontend
 npm i -S @vue/cli-service
 npm i -g @aws-amplify/cli
 npm install
+npm install marked
 npm run build
 cp ~/.aws/credentials ~/.aws/config
 

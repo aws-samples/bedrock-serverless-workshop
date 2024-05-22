@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Prompt from './views/Prompt.vue'
 import RAG from './views/RAG.vue'
 import LLMs from './views/LLMs.vue'
 import Login from './views/Login.vue'
@@ -22,6 +23,11 @@ const router = new Router({
       path: '/rag',
       name: 'rag',
       component: RAG
+    },
+    {
+      path: '/prompt',
+      name: 'prompt',
+      component: Prompt
     },
     {
       path: '/login',

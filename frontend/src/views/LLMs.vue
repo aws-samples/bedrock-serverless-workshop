@@ -69,8 +69,12 @@
               <strong>Loading...</strong>
             </div>
             <div id="divresult" class="text-secondary mb-2" style="display: block; padding: 3px;">
-              <strong v-if="output.answer" style="display: block; white-space: pre-line; text-align: left">Response: </strong>
-              <span v-if="output.answer" style="white-space: pre-line; text-align: left">{{output.answer}}</span>
+              <template>
+                <div>
+                  <strong v-if="output.answer" style="display: block; white-space: pre-line; text-align: left">Response: </strong>
+                  <span v-if="output.answer" style="white-space: pre-line; text-align: left"><pre><code class="language-python">{{output.answer}}</code></pre></span>
+                </div>
+              </template>
               <br />
               <strong v-if="output.source_documents" style="display: block; text-align: left">References: </strong>
               <span v-if="output.source_documents" style="white-space: pre-line; text-align: left">{{output.source_documents }}</span>
@@ -104,60 +108,63 @@
     </div>
   </div>
 </template>
+
 <script>
 import { getAuthToken } from './../utils/auth'
-    export default {
-        mounted() {
-            console.log('Component mounted.')
-        },
-        data() {
-            return {
-                name: '',
-                description: '',
-                output: ''
-            };
-        },
-        methods: {
-            formSubmit(e) {
-                console.log('started.')
-                e.preventDefault();
-                var x = document.getElementById("divresult");
-                var img = document.getElementById("loading");
-                var model_select = document.getElementById('model');
-                var model_id = model_select.options[model_select.selectedIndex].value;
 
-                var temperature_select = document.getElementById('temperature');
-                var temperature = parseFloat(temperature_select.options[temperature_select.selectedIndex].value);
+  export default {
+      mounted() {
+          console.log('Component mounted.')
+      },
+      data() {
+          return {
+              name: '',
+              description: '',
+              output: ''
+          };
+      },
+      methods: {
+          formSubmit(e) {
+              console.log('started.')
+              e.preventDefault();
+              var x = document.getElementById("divresult");
+              var img = document.getElementById("loading");
+              var model_select = document.getElementById('model');
+              var model_id = model_select.options[model_select.selectedIndex].value;
 
-                var token_select = document.getElementById('token');
-                var token = parseInt(token_select.options[token_select.selectedIndex].value);
-                img.style.display = "block";
-                x.style.display = "none";
-                let currentObj = this;
-                const json = JSON.stringify({
-                    query: this.name,
-                    model_id: model_id,
-                    temperature: temperature,
-                    max_tokens: token
-                });
-               console.log(json)
-               const config = {
-    headers:{
-        'Content-Type': 'application/json',
-        'Authorization': getAuthToken()
-      }
-    };
-     this.axios.post('/llms',
-     json, config).then(function(response) {
-                    img.style.display = "none";
-                    x.style.display = "block";
-                    console.log(response.data)
-                    currentObj.output =response.data
-                    console.log(currentObj.output)
-                }).catch(function(error) {
-                    currentObj.output = error;
-                });
-            }
-        }
+              var temperature_select = document.getElementById('temperature');
+              var temperature = parseFloat(temperature_select.options[temperature_select.selectedIndex].value);
+
+              var token_select = document.getElementById('token');
+              var token = parseInt(token_select.options[token_select.selectedIndex].value);
+              img.style.display = "block";
+              x.style.display = "none";
+              let currentObj = this;
+              const json = JSON.stringify({
+                  query: this.name,
+                  model_id: model_id,
+                  temperature: temperature,
+                  max_tokens: token
+              });
+             console.log(json)
+             const config = {
+  headers:{
+      'Content-Type': 'application/json',
+      'Authorization': getAuthToken()
     }
+  };
+   this.axios.post('/llms',
+   json, config).then(function(response) {
+                  img.style.display = "none";
+                  x.style.display = "block";
+                  console.log(response.data)
+                  currentObj.output =response.data
+                  console.log(currentObj.output)
+              }).catch(function(error) {
+                  currentObj.output = error;
+              });
+          }
+      }
+  }
 </script>
+

@@ -6,7 +6,7 @@
     <div class="row">
       <div class="col-lg-6 mb-4" style="min-width: 750px;">
         <div class="card-header" style="background-color:#FF9900">
-          RAG conversation with various LLMs
+          Prompt Engineering with Claude 3
         </div>
         <div class="card">
           <img class="card-img-top" src="" alt=""/>
@@ -20,10 +20,7 @@
                 <td>
                   <div class="select">
                   <select id="model" name="model">
-                    <option value="anthropic.claude-3-haiku-20240307-v1:0" selected>Claude 3 Haiku</option>
-                    <option value="anthropic.claude-3-sonnet-20240229-v1:0">Claude 3 Sonnet</option>
-                    <option value="mistral.mistral-7b-instruct-v0:2">Mistral 7B</option>
-                    <option value="meta.llama2-13b-chat-v1">Llama 2 Chat 13B</option>
+                    <option value="anthropic.claude-3-sonnet-20240229-v1:0" selected>Claude 3 Sonnet</option>
                   </select>
                   </div>
                 </td>
@@ -59,6 +56,9 @@
               <strong>Query</strong> <br />
               <input type="text" class="form-control" v-model="name" placeholder="Type your question..." />
               <br />
+              <strong>Prompt template</strong> <br />
+              <textarea class="form-control" rows="5" v-model="promptTemplate" placeholder="Type your prompt template here, the prompt must contain at least {context} and {question} tags..."></textarea>
+              <br />
               <button class="btn btn-success">Ask Question</button>
             </form>
             <br />
@@ -68,9 +68,6 @@
             <div id="divresult" class="text-secondary mb-2" style="display: block; padding: 3px;">
               <strong v-if="output.answer" style="display: block; white-space: pre-line; text-align: left">Response: </strong>
               <span v-if="output.answer" style="white-space: pre-line; text-align: left">{{output.answer}}</span>
-              <br />
-              <strong v-if="output.source_documents" style="display: block; text-align: left">References: </strong>
-              <span v-if="output.source_documents" style="white-space: pre-line; text-align: left">{{output.source_documents}}</span>
               <br />
               <strong v-if="output.error" style="display: block; white-space: pre-line; color: red; text-align: left">Error: </strong>
               <span v-if="output.error" style="white-space: pre-line; text-align: left; color: red; font-style: italic;">{{output.error}}</span>
@@ -92,16 +89,16 @@
             <br />
             <label style="font-weight:lighter;color:grey" >What are the demographic trends in dental space?</label>
             <br />
-            <label style="font-weight:lighter; color:grey" >What are Amazon sustainability goals by year 2040?</label>
+            <label style="font-weight:lighter; color:grey" >Tell me a story around a fox and tiger under 50 tokens.</label>
           </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
 <script>
 import { getAuthToken } from './../utils/auth'
-//import linkifyHtml from 'linkify-html';
     export default {
         mounted() {
             console.log('Component mounted.')
@@ -132,6 +129,7 @@ import { getAuthToken } from './../utils/auth'
                 let currentObj = this;
                 const json = JSON.stringify({
                     query: this.name,
+                    prompt: this.promptTemplate,
                     model_id: model_id,
                     temperature: temperature,
                     max_tokens: token
@@ -145,7 +143,7 @@ import { getAuthToken } from './../utils/auth'
         'Authorization': getAuthToken()
       }
     };
-     this.axios.post('/rag',
+     this.axios.post('/prompt',
      json, config).then(function(response) {
                     img.style.display = "none";
                     x.style.display = "block";
