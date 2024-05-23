@@ -17,7 +17,6 @@ node --version
 #update Ampliyfy and build frontend
 cd ~/environment/bedrock-serverless-workshop/frontend
 npm run build
-#npm install marked
 
 rm -r build
 mv dist build
@@ -30,5 +29,6 @@ sam deploy
 
 aws secretsmanager get-secret-value --secret-id $SecretName | jq -r .SecretString
 
-https://dev.d3pro0sb2mjyj9.amplifyapp.com/
+https://dev.d9byk12o6j78n.amplifyapp.com
+ouF12z$Mg6Tq
 

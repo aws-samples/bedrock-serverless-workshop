@@ -20,11 +20,11 @@
                 <td>
                   <div class="select">
                     <select id="model" name="model">
-                      <option value="anthropic.claude-v2:1">Claude 2.1</option>
                       <option value="anthropic.claude-3-haiku-20240307-v1:0" selected>Claude 3 Haiku</option>
                       <option value="anthropic.claude-3-sonnet-20240229-v1:0">Claude 3 Sonnet</option>
                       <option value="mistral.mistral-7b-instruct-v0:2">Mistral 7B</option>
                       <option value="meta.llama2-13b-chat-v1">Llama 2 Chat 13B</option>
+                      <option value="anthropic.claude-3-opus-20240229-v1:0">Claude 3 Opus</option>
                     </select>
                   </div>
                 </td>
@@ -48,7 +48,7 @@
                   <div class="select">
                   <select id="token" name="token">
                     <option value="250">250</option>
-                    <option value="500" selected>500</option>
+                    <option value="500" selected>1000</option>
                     <option value="1000">1000</option>
                     <option value="2000">2000</option>
                      <option value="5000">5000</option>
