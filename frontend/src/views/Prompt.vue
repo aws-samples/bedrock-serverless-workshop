@@ -89,7 +89,7 @@
             <br />
             <label style="font-weight:lighter;color:grey" >What are the demographic trends in dental space?</label>
             <br />
-            <label style="font-weight:lighter; color:grey" >Tell me a story around a fox and tiger under 50 tokens.</label>
+            <label style="font-weight:lighter; color:grey" >What are Amazon sustainability goals by year 2040?</label>
           </div>
         </div>
       </div>
