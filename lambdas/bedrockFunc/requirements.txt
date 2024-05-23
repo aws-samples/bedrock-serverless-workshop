@@ -1,0 +1,4 @@
+boto3>=1.28.57
+langchain>=0.0.331
+coloredlogs==15.0.1
+jq==1.6.0

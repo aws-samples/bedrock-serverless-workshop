@@ -6,7 +6,7 @@
     <div class="row">
       <div class="col-lg-6 mb-4" style="min-width: 750px;">
         <div class="card-header" style="background-color:#FF9900">
-          Bedrock Workshop
+          RAG conversation with other models
         </div>
         <div class="card">
           <img class="card-img-top" src="" alt=""/>
@@ -20,21 +20,21 @@
                 <td>
                   <div class="select">
                   <select id="model" name="model">
-                    <option value="anthropic.claude-v2" selected>Claude 2</option>
+                    <option value="anthropic.claude-v2">Claude 2</option>
+                    <option value="meta.llama2-13b-chat-v1" selected>Llama 2 Chat 13B</option>
                     <option value="ai21.j2-ultra-v1">Jurassic 2 Ultra</option>
                   </select>
                   </div>
                 </td>
-              
                 <td>
                 &nbsp;  <label for="model">Temperature:</label>&nbsp;
                 </td>
                 <td>
                   <div class="select">
                   <select id="temperature" name="temperature">
-                    <option value="0">0</option>
-                    <option value="0.5" selected>0.5</option>
-                    <option value="1">1</option>
+                    <option value='0'>0</option>
+                    <option value='0.5' selected>0.5</option>
+                    <option value='1'>1</option>
                   </select>
                   </div>
                 </td>
@@ -45,12 +45,11 @@
                 <td>
                   <div class="select">
                   <select id="token" name="token">
-                    <option value="100">100</option>
-                    <option value="150">150</option>
                     <option value="250">250</option>
-                    <option value="500" selected>500</option>
-                    <option value="1000">1000</option>
+                    <option value="500">500</option>
+                    <option value="1000" selected>1000</option>
                     <option value="2000">2000</option>
+                     <option value="5000">5000</option>
                   </select>
                   </div>
                 </td>
@@ -122,7 +121,7 @@ import { getAuthToken } from './../utils/auth'
                 var model_id = model_select.options[model_select.selectedIndex].value;
 
                 var temperature_select = document.getElementById('temperature');
-                var temperature = parseInt(temperature_select.options[temperature_select.selectedIndex].value);
+                var temperature = parseFloat(temperature_select.options[temperature_select.selectedIndex].value);
 
                 var token_select = document.getElementById('token');
                 var token = parseInt(token_select.options[token_select.selectedIndex].value);
@@ -139,18 +138,16 @@ import { getAuthToken } from './../utils/auth'
                 });
                console.log(json)
                const config = {
-  headers:{
-    'Content-Type': 'application/json',
-    'Authorization': getAuthToken()
-  }
-};
+    headers:{
+        'Content-Type': 'application/json',
+        'Authorization': getAuthToken()
+      }
+    };
      this.axios.post('/kendra-search-summarize-with-bedrock',
      json, config).then(function(response) {
-
                     img.style.display = "none";
                     x.style.display = "block";
-                  console.log(response.data)
-              
+                    console.log(response.data)
                     currentObj.output =response.data
                     console.log(currentObj.output)
                 }).catch(function(error) {

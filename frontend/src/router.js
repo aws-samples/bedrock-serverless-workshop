@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Home.vue'
+import Prompt from './views/Prompt.vue'
+import RAG from './views/RAG.vue'
+import LLMs from './views/LLMs.vue'
 import Login from './views/Login.vue'
 import About from './views/About.vue'
 import NotFoundPage from './components/NotFoundPage.vue'
@@ -14,8 +16,18 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'home',
-      component: Home
+      name: 'llms',
+      component: LLMs
+    },
+    {
+      path: '/rag',
+      name: 'rag',
+      component: RAG
+    },
+    {
+      path: '/prompt',
+      name: 'prompt',
+      component: Prompt
     },
     {
       path: '/login',
