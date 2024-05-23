@@ -17,7 +17,6 @@
     "jwt-decode": "^3.1.2",
     "linkify-html": "^4.1.1",
     "linkifyjs": "^4.1.1",
-    "marked": "^12.0.2",
     "react": "^18.2.0",
     "react-native-web": "^0.19.8",
     "react-router-dom": "^6.16.0",
@@ -33,11 +32,8 @@
     "@vue/cli-plugin-eslint": "~4.5.15",
     "@vue/cli-service": "~4.5.15",
     "babel-eslint": "^10.1.0",
-    "babel-loader": "^9.1.3",
     "eslint": "^6.7.2",
     "eslint-plugin-vue": "^6.2.2",
-    "html-loader": "^5.0.0",
-    "markdown-loader": "^8.0.0",
     "vue-template-compiler": "^2.6.14"
   },
   "eslintConfig": {

@@ -72,7 +72,7 @@
               <template>
                 <div>
                   <strong v-if="output.answer" style="display: block; white-space: pre-line; text-align: left">Response: </strong>
-                  <span v-if="output.answer" style="white-space: pre-line; text-align: left"><pre><code class="language-python">{{output.answer}}</code></pre></span>
+                  <span v-if="output.answer" style="white-space: pre-line; text-align: left">{{output.answer}}</span>
                 </div>
               </template>
               <br />
