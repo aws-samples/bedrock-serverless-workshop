@@ -29,6 +29,3 @@ sam deploy
 
 aws secretsmanager get-secret-value --secret-id $SecretName | jq -r .SecretString
 
-https://dev.d9byk12o6j78n.amplifyapp.com
-ouF12z$Mg6Tq
-
