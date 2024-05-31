@@ -1,10 +1,8 @@
 import os
 import json
 import boto3
-from langchain.agents import load_tools, initialize_agent, AgentType
 from langchain_community.retrievers import AmazonKendraRetriever
-from langchain_community.chat_models import BedrockChat
-from langchain.chains import ConversationalRetrievalChain
+from langchain_aws import ChatBedrock
 from langchain.memory import ConversationBufferWindowMemory
 from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
@@ -105,7 +103,7 @@ def get_claude_llm(model_id, temperature, max_tokens):
         "top_k": 50, 
         "top_p": 1
     }
-    llm = BedrockChat(model_id=model_id, model_kwargs=model_kwargs) 
+    llm = ChatBedrock(model_id=model_id, model_kwargs=model_kwargs) 
     return llm
 
 #This is a TODO item, presently the history is not retained between the calls
