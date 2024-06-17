@@ -6,18 +6,14 @@ from langchain_aws import ChatBedrock
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import PromptTemplate
+
 import traceback
 
-# Set up the Bedrock client
-bedrock = boto3.client('bedrock')
-
-# Set up the Kendra client
 kendra = boto3.client('kendra')
 
 KENDRA_INDEX_ID = os.getenv('KENDRA_INDEX_ID')
+S3_BUCKET_NAME = os.environ["S3_BUCKET_NAME"]
 
-# Create a global variable to store the memory instance
-MEMORY = None
 
 def lambda_handler(event, context):
     print(f"Event is: {event}")
@@ -32,30 +28,29 @@ def lambda_handler(event, context):
 
     response = ''
     status_code = 200
-    prompt = """[INST]Please provide a detailed answer to the question based on the given context. 
-                  If the context does not contain enough information to answer the question, kindly mention that as well.[/INST]"""
-    claude_prompt = """
-                    Human: You are an intelligent AI adviser, and provide answers to questions by using fact based information. 
-                    Use the following pieces of information to provide a concise answer to the question enclosed in <question> tags. 
-                    Look for the contextual information enclosed in <context> tags.
-                    If you don't know the answer, just say that you don't know, don't try to make up an answer.
-                    <context>{context}</context>
-                    
-                    <question>{question}</question>
-                    
-                    The response should be specific and use facts only.
-                    
-                    Assistant:
 
-                    """
+    PROMPT_TEMPLATE = 'prompt-engineering/claude-prompt-template.txt'
+
     try:
         if model_id == 'mistral.mistral-7b-instruct-v0:2':
             llm = get_mistral_llm(model_id,temperature,max_tokens)
+            PROMPT_TEMPLATE = 'prompt-engineering/mistral-prompt-template.txt'
         elif model_id == 'meta.llama2-13b-chat-v1':
             llm = get_llama_llm(model_id,temperature,max_tokens)
+            PROMPT_TEMPLATE = 'prompt-engineering/llama-prompt-template.txt'
         else:
             llm = get_claude_llm(model_id,temperature,max_tokens)
-            prompt = claude_prompt
+            PROMPT_TEMPLATE = 'prompt-engineering/claude-prompt-template.txt'
+        
+        # Read the prompt template from S3 bucket
+        s3 = boto3.resource('s3')
+        obj = s3.Object(S3_BUCKET_NAME, PROMPT_TEMPLATE) 
+        prompt_template = obj.get()['Body'].read().decode('utf-8')
+        print(f"prompt template: {prompt_template}")
+            
+        PROMPT = PromptTemplate(
+            template=prompt_template, input_variables=["context", "question"]
+        )
             
         # Initialize the Kendra loader
         retriever = AmazonKendraRetriever(
@@ -64,7 +59,7 @@ def lambda_handler(event, context):
         )
         conversation_with_retrieval = ConversationalRetrievalChain.from_llm(llm, retriever, memory=get_memory(), return_source_documents=True, verbose=False)
         
-        chat_response = conversation_with_retrieval.invoke({"question": question, "prompt": prompt})
+        chat_response = conversation_with_retrieval.invoke({"question": question, "prompt": PROMPT})
         print(f"chat_response is: {chat_response}")
         
         previous_source = None
@@ -149,14 +144,12 @@ def get_mistral_llm(model_id, temperature, max_tokens):
     llm = ChatBedrock(model_id=model_id, model_kwargs=model_kwargs) 
     return llm
 
-#This is a TODO item, needs some improvments, such is store the history in DynamoDB etc
 def get_memory():
-    global MEMORY
-    if MEMORY is None:
-        MEMORY = ConversationBufferMemory(
-            memory_key="chat_history",
-            input_key="question",
-            output_key="answer",
-            return_messages=True
-        )
-    return MEMORY
+ 
+    memory = ConversationBufferMemory(
+        memory_key="chat_history",
+        input_key="question",
+        output_key="answer",
+        return_messages=True
+    )
+    return memory
