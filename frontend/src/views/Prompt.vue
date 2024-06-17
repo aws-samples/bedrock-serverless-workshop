@@ -57,7 +57,7 @@
               <input type="text" class="form-control" v-model="name" placeholder="Type your question..." />
               <br />
               <strong>Prompt template</strong> <br />
-              <textarea class="form-control" rows="5" v-model="promptTemplate" placeholder="Type your prompt template here, the prompt must contain at least {context} and {question} tags..."></textarea>
+              <textarea class="form-control" rows="8" v-model="promptTemplate" placeholder="Type your prompt template here, the prompt must contain at least {context} and {question} tags..."></textarea>
               <br />
               <button class="btn btn-success">Ask Question</button>
             </form>

@@ -1,0 +1,6 @@
+[INST]Please provide a detailed answer to the question based on the given context. 
+If the context does not contain enough information to answer the question, kindly mention that as well.
+The question enclosed in <question> tags and the contextual information enclosed in <context> tags.
+<context>{context}</context>
+<question>{question}</question>
+[/INST]

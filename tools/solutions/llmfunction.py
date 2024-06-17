@@ -1,12 +1,14 @@
 import boto3
 import json
-import json
 import traceback
 
 
 region = boto3.session.Session().region_name
 
 def lambda_handler(event, context):
+    boto3_version = boto3.__version__
+    print(f"Boto3 version: {boto3_version}")
+    
     print(f"Event is: {event}")
     event_body = json.loads(event["body"])
     prompt = event_body["query"]

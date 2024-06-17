@@ -8,15 +8,10 @@ from langchain.prompts import PromptTemplate
 from langchain.chains import RetrievalQA
 import traceback
 
-# Set up the Bedrock client
-bedrock = boto3.client('bedrock')
-
 # Set up the Kendra client
 kendra = boto3.client('kendra')
 
 KENDRA_INDEX_ID = os.getenv('KENDRA_INDEX_ID')
-S3_BUCKET_NAME = os.environ["S3_BUCKET_NAME"]
-
 
 def lambda_handler(event, context):
     print(f"Event is: {event}")
@@ -42,12 +37,6 @@ def lambda_handler(event, context):
             kendra_client=kendra,
             index_id=KENDRA_INDEX_ID
         )
-        #PROMPT_TEMPLATE = 'prompt-engineering/claude-prompt-template.txt'
-        #s3 = boto3.resource('s3')
-        #obj = s3.Object(S3_BUCKET_NAME, PROMPT_TEMPLATE) 
-        #prompt_template = obj.get()['Body'].read().decode('utf-8')
-        #print(f"prompt: {prompt_template}")
-        
         claude_prompt = PromptTemplate(
                 template=prompt_template, input_variables=["context","question"]
         )
@@ -60,7 +49,6 @@ def lambda_handler(event, context):
             chain_type_kwargs={"prompt": claude_prompt}
         )
         
-        #response = qa.invoke(question)
         response = qa(question, return_only_outputs=True)
         print(response)
         
