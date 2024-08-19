@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Prompt from './views/Prompt.vue'
+import MsgAnalysis from './views/MsgAnalysis.vue'
 import RAG from './views/RAG.vue'
 import LLMs from './views/LLMs.vue'
 import Login from './views/Login.vue'
@@ -28,6 +29,11 @@ const router = new Router({
       path: '/prompt',
       name: 'prompt',
       component: Prompt
+    },
+    {
+      path: '/msganalysis',
+      name: 'msganalysis',
+      component: MsgAnalysis
     },
     {
       path: '/login',

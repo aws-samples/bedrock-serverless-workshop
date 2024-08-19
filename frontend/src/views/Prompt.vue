@@ -20,7 +20,7 @@
                 <td>
                   <div class="select">
                   <select id="model" name="model">
-                    <option value="anthropic.claude-3-sonnet-20240229-v1:0" selected>Claude 3 Sonnet</option>
+                    <option value="anthropic.claude-3-5-sonnet-20240620-v1:0" selected>Claude 3.5 Sonnet</option>
                   </select>
                   </div>
                 </td>

@@ -26,7 +26,7 @@ nvm use 16
 node --version
 
 echo "Set region"
-export AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r '.region')
+export AWS_REGION=$(aws configure get region)
 echo "AWS Region is $AWS_REGION"
 
 echo "Build the backend code using sam build"

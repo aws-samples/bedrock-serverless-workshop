@@ -37,6 +37,12 @@
             <li class="nav-item mr-4">
               <span>|</span>
             </li>
+            <li class="nav-item mr-4">
+              <router-link to="/msganalysis">Message Analysis</router-link>
+            </li>
+            <li class="nav-item mr-4">
+              <span>|</span>
+            </li>
             <li class="nav-item">
               <router-link to="/logout">Sign out</router-link>
             </li>

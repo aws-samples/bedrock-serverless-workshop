@@ -61,6 +61,13 @@ Resources:
       ParentId: !GetAtt BedrockLambdaApi.RootResourceId
       PathPart: 'prompt'
       RestApiId: !Ref BedrockLambdaApi
+      
+  MAResource:
+    Type: AWS::ApiGateway::Resource
+    Properties:
+      ParentId: !GetAtt BedrockLambdaApi.RootResourceId
+      PathPart: 'msganalysis'
+      RestApiId: !Ref BedrockLambdaApi
   
   # RAG Method Config
   RagOptionsMethod:
@@ -245,6 +252,67 @@ Resources:
       Description: LLM API Deployment
       RestApiId: !Ref BedrockLambdaApi
   
+  # MSG Analysis Method Config
+  MAOptionsMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: OPTIONS
+      ResourceId: !Ref MAResource
+      RestApiId: !Ref BedrockLambdaApi
+      AuthorizationType: NONE
+      Integration:
+        IntegrationResponses:
+          - StatusCode: 200
+            ResponseParameters:
+              method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+              method.response.header.Access-Control-Allow-Methods: "'POST,OPTIONS'"
+              method.response.header.Access-Control-Allow-Origin: "'*'"
+        PassthroughBehavior: WHEN_NO_MATCH
+        RequestTemplates:
+          application/json: '{"statusCode": 200}'
+        Type: MOCK
+      MethodResponses:
+        - StatusCode: 200
+          ResponseModels:
+            application/json: 'Empty'
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'POST,OPTIONS'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+    
+  MAPostMethod:
+    Type: AWS::ApiGateway::Method
+    Properties:
+      HttpMethod: POST
+      ResourceId: !Ref MAResource
+      RestApiId: !Ref BedrockLambdaApi
+      AuthorizationType: NONE
+      Integration:
+        IntegrationHttpMethod: POST
+        Type: AWS_PROXY
+        Uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${MAFunction.Arn}/invocations"
+      MethodResponses:
+        - StatusCode: 200
+          ResponseParameters:
+            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+            method.response.header.Access-Control-Allow-Methods: "'POST,OPTIONS'"
+            method.response.header.Access-Control-Allow-Origin: "'*'"
+  
+  MAFunctionPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref MAFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub "arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${BedrockLambdaApi}/*/*/*"
+  
+  MAApiDeployment:
+    Type: AWS::ApiGateway::Deployment
+    DependsOn:  MAPostMethod
+    Properties:
+      Description: MSG Analysis API Deployment
+      RestApiId: !Ref BedrockLambdaApi
+      
   #### Cognito Auth Config
   ApiCognitoAuthorizer:          
     Type: AWS::ApiGateway::Authorizer
@@ -357,6 +425,19 @@ Resources:
       Architectures:
         - x86_64
       Role: !GetAtt LLMExecutionRole.Arn
+      
+  MAFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: mafunction.lambda_handler
+      CodeUri: lambdas/llmFunctions
+      Runtime: python3.10
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          S3_BUCKET_NAME: !Ref BedrockWSS3Bucket 
+      Role: !GetAtt LLMExecutionRole.Arn
   
   RagFunction:
     Type: AWS::Serverless::Function
@@ -370,6 +451,26 @@ Resources:
         Variables:
           KENDRA_INDEX_ID: !Ref KendraIndexId
           S3_BUCKET_NAME: !Ref BedrockWSS3Bucket 
+      Role: !GetAtt LLMExecutionRole.Arn
+      
+  ConverseApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: converse-api-function.lambda_handler
+      CodeUri: lambdas/llmFunctions
+      Runtime: python3.10
+      Architectures:
+        - x86_64
+      Role: !GetAtt LLMExecutionRole.Arn
+      
+  AgentCallFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: agent-call-function.lambda_handler
+      CodeUri: lambdas/llmFunctions
+      Runtime: python3.10
+      Architectures:
+        - x86_64
       Role: !GetAtt LLMExecutionRole.Arn
       
   PromptFunction:
