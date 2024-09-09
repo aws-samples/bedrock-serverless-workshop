@@ -48,8 +48,8 @@
                   <div class="select">
                   <select id="token" name="token">
                     <option value="250">250</option>
-                    <option value="500" selected>1000</option>
-                    <option value="1000">1000</option>
+                    <option value="500">500</option>
+                    <option value="1000" selected>1000</option>
                     <option value="2000">2000</option>
                      <option value="5000">5000</option>
                   </select>
