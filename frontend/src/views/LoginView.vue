@@ -97,7 +97,7 @@
 <script>
 import { loginUser } from "../utils/auth";
 export default {
-  name: "login",
+  name: "loginView",
   data() {
     return {
       error: "",

@@ -1,10 +1,10 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Prompt from './views/Prompt.vue'
+import PromptView from './views/PromptView.vue'
 import RAG from './views/RAG.vue'
 import LLMs from './views/LLMs.vue'
-import Login from './views/Login.vue'
-import About from './views/About.vue'
+import LoginView from './views/LoginView.vue'
+import AboutView from './views/AboutView.vue'
 import NotFoundPage from './components/NotFoundPage.vue'
 import { clearAuthToken, isLoggedIn } from './utils/auth'
 
@@ -27,12 +27,12 @@ const router = new Router({
     {
       path: '/prompt',
       name: 'prompt',
-      component: Prompt
+      component: PromptView
     },
     {
       path: '/login',
       name: 'login',
-      component: Login,
+      component: LoginView,
       meta: {
         allowAnonymous: true
       }
@@ -48,7 +48,7 @@ const router = new Router({
     {
       path: '/about',
       name: 'about',
-      component: About
+      component: AboutView
     },
     {
       path: '*',

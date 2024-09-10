@@ -19,11 +19,11 @@ sudo apt install -y jq
 #chmod +x resize.sh
 #./resize.sh 20
 
-echo "Update node js to version 16"
-source "$HOME/.nvm/nvm.sh"
-nvm install 16
-nvm use 16
-node --version
+#echo "Update node js to version 16"
+#source "$HOME/.nvm/nvm.sh"
+#nvm install 16
+#nvm use 16
+#node --version
 
 echo "Set region"
 export AWS_REGION=$(aws configure get region)
@@ -36,10 +36,6 @@ sam build
 echo "Export S3 bucket name and Kendra index which are created as part of Startup CFN stack"
 export S3BucketName=$(aws cloudformation describe-stacks --stack-name ${CFNStackName} --query "Stacks[0].Outputs[?OutputKey=='S3BucketName'].OutputValue" --output text)
 export KendraIndexID=$(aws cloudformation describe-stacks --stack-name ${CFNStackName} --query "Stacks[0].Outputs[?OutputKey=='KendraIndexID'].OutputValue" --output text)
-
-#You can also use these commands to read values
-#export S3BucketName=$(aws s3api list-buckets | jq -r --arg bucketName "$CFNStackName" '.Buckets[] | select(.Name | contains($bucketName)) | .Name')
-#export KendraIndexID=$(aws kendra list-indices | jq -r --arg indexName "$CFNStackName" '.IndexConfigurationSummaryItems[] | select(.Name | contains($indexName)) | .Id')
 
 export SAMStackName="sam-$CFNStackName"
 echo $SAMStackName
