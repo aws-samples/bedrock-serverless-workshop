@@ -6,7 +6,7 @@
     <div class="row">
       <div class="col-lg-6 mb-4" style="min-width: 750px;">
         <div class="card-header" style="background-color:#FF9900">
-          Prompt Engineering with Claude 3
+          Prompt Engineering with Claude 3.5 Sonnet
         </div>
         <div class="card">
           <img class="card-img-top" src="" alt=""/>
@@ -20,7 +20,7 @@
                 <td>
                   <div class="select">
                   <select id="model" name="model">
-                    <option value="anthropic.claude-3-sonnet-20240229-v1:0" selected>Claude 3 Sonnet</option>
+                    <option value="anthropic.claude-3-5-sonnet-20240620-v1:0">Claude 3.5 Sonnet</option>
                   </select>
                   </div>
                 </td>
@@ -44,8 +44,9 @@
                   <div class="select">
                   <select id="token" name="token">
                     <option value="250">250</option>
-                    <option value="500" selected>500</option>
-                    <option value="1000">1000</option>
+                    <option value="500">500</option>
+                    <option value="1000" selected>1000</option>
+                    <option value="2000">2000</option>
                   </select>
                   </div>
                 </td>
