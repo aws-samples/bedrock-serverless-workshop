@@ -22,7 +22,7 @@ def lambda_handler(event, context):
     try:
         if model_id == 'mistral.mistral-7b-instruct-v0:2':
             response = invoke_mistral_7b(model_id, prompt, temperature, max_tokens)
-        elif model_id == 'meta.llama2-13b-chat-v1':
+        elif model_id == 'meta.llama3-1-8b-instruct-v1:0':
             response = invoke_llama(model_id, prompt, temperature, max_tokens)
         else:
             response = invoke_claude(model_id, prompt, temperature, max_tokens)
@@ -109,14 +109,15 @@ def invoke_llama(model_id, prompt, temperature, max_tokens):
     print(f"Invoking llam model {model_id}" )
     print(f"max_tokens {max_tokens}" )
     try:
-        instruction = f"<s>[INST]You are a very intelligent bot with exceptional critical thinking, help answering the question, here is the question: {prompt} [/INST]"
-        prompt_template = f"{instruction}\n {prompt}" 
-        print(f"Prompt template {prompt_template}" )
+        instruction = f"[INST]You are a very intelligent bot with exceptional critical thinking, help me answering below question.[/INST]"
+        total_prompt = f"{instruction}\n{prompt}" 
+        
+        print(f"Prompt template {total_prompt}" )
 
         bedrock_runtime_client = boto3.client(service_name="bedrock-runtime", region_name=region)
         
         body = {
-            "prompt": instruction,
+            "prompt": total_prompt,
             "max_gen_len": max_tokens,
             "temperature": temperature,
             "top_p": 0.9

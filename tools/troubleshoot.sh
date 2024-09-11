@@ -11,8 +11,10 @@ export SecretName=$(aws cloudformation describe-stacks --stack-name ${SAMStackNa
 
 
 #Amplify and sam builds
-nvm use 16
-node --version
+#nvm use 16
+#node --version
+
+export PATH=~/.npm-global/bin:$PATH
 
 #update Ampliyfy and build frontend
 cd ~/environment/bedrock-serverless-workshop/frontend

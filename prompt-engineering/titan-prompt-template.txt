@@ -1,9 +1,0 @@
-We are conducting a Generative AI workshop, please carefully construct your response for the question from the given context only. It's very important that your answer is within the context, if you cannot derive satisfying response, please respond with "Sorry, I don't know the answer"
-
-##Context:
-{context}
-
-##Question: 
-{question}
-
-###Answer:
