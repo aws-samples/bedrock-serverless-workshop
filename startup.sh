@@ -67,11 +67,17 @@ sed -Ei "s|<ApiGatewayUrl>|${BedrockApiUrl}|g" ./frontend/src/main.js
 sed -Ei "s|<CognitoUserPoolId>|${UserPoolId}|g" ./frontend/src/main.js
 sed -Ei "s|<UserPoolClientId>|${UserPoolClientId}|g" ./frontend/src/main.js
 
+#Pre req for frontend setup
+mkdir ~/.npm-global
+npm config set prefix '~/.npm-global'
+export PATH=~/.npm-global/bin:$PATH
+source ~/.profile
+
 #Install Ampliyfy and build frontend
 echo "Install Ampliyfy and build frontend"
 cd ~/environment/bedrock-serverless-workshop/frontend
-npm i -S @vue/cli-service
-npm i -g @aws-amplify/cli
+npm install -S @vue/cli-service
+npm install -g @aws-amplify/cli
 npm install
 npm run build
 cp ~/.aws/credentials ~/.aws/config
