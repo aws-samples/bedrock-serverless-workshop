@@ -6,6 +6,7 @@ import LLMs from './views/LLMs.vue'
 import LoginView from './views/LoginView.vue'
 import AboutView from './views/AboutView.vue'
 import NotFoundPage from './components/NotFoundPage.vue'
+import KB from './views/KB.vue'
 import { clearAuthToken, isLoggedIn } from './utils/auth'
 
 Vue.use(Router)
@@ -23,6 +24,11 @@ const router = new Router({
       path: '/rag',
       name: 'rag',
       component: RAG
+    },
+    {
+      path: '/kb',
+      name: 'kb',
+      component: KB
     },
     {
       path: '/prompt',
