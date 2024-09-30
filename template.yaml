@@ -129,19 +129,6 @@ Resources:
     Properties:
       Description: KB API Deployment
       RestApiId: !Ref BedrockLambdaApi
-
-  KBFunction:
-    Type: AWS::Serverless::Function
-    Properties:
-      Handler: kbfunction.lambda_handler
-      CodeUri: lambdas/llmFunctions
-      Runtime: python3.10
-      Architectures:
-        - x86_64
-      Environment:
-        Variables:
-          KB_ID: copy_kb_id
-      Role: !GetAtt LLMExecutionRole.Arn
       
   # RAG Method Config
   RagOptionsMethod:
@@ -467,6 +454,19 @@ Resources:
           S3_BUCKET_NAME: !Ref BedrockWSS3Bucket 
       Role: !GetAtt LLMExecutionRole.Arn
   
+  KBFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: kbfunction.lambda_handler
+      CodeUri: lambdas/llmFunctions
+      Runtime: python3.10
+      Architectures:
+        - x86_64
+      Environment:
+        Variables:
+          KB_ID: copy_kb_id
+      Role: !GetAtt LLMExecutionRole.Arn
+  
   LLMExecutionRole:
     Type: AWS::IAM::Role
     Properties:
@@ -519,7 +519,40 @@ Resources:
               - !Sub "arn:aws:s3:::${BedrockWSS3Bucket}/*"
               - !Sub "arn:aws:s3:::${BedrockWSS3Bucket}"
               - "*"
-          
+  BedrockExecutionRoleForKBs:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: ''
+            Effect: Allow
+            Principal:
+              Service: bedrock.amazonaws.com
+            Action: 'sts:AssumeRole'
+      Policies:
+        - PolicyName: BedrockOpenSearchS3AccessPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'bedrock:InvokeModel'
+                Resource:
+                  - !Sub "arn:aws:bedrock:${AWS::Region}::foundation-model/amazon.titan-embed-text-v2:0"
+              - Effect: Allow
+                Action:
+                  - 'aoss:APIAccessAll'
+                Resource:
+                  - !Sub "arn:aws:aoss:${AWS::Region}:${AWS::AccountId}:collection/*"
+              - Effect: Allow
+                Action:
+                  - 's3:ListBucket'
+                  - 's3:GetObject'
+                Resource:
+                  - !Sub "arn:aws:s3:::${BedrockWSS3Bucket}/sample-documents/*"
+                  - !Sub "arn:aws:s3:::${BedrockWSS3Bucket}"
+
 Outputs:
     CognitoUserPool:
       Description: Cognito User Pool

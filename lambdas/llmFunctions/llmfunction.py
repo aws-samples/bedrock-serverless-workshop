@@ -1,6 +1,5 @@
 import boto3
 import json
-import json
 import traceback
 
 
