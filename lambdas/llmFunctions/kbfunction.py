@@ -1,6 +1,5 @@
 import boto3
 import json
-import traceback
 
 
 region = boto3.session.Session().region_name
@@ -8,7 +7,7 @@ region = boto3.session.Session().region_name
 def lambda_handler(event, context):
     print(f"Event is: {event}")
 
-    response = 'This function is not ready, please complete the next two tasks and test again.'
+    response = 'This function is not yet available. Please proceed to Task 8, where you will implement it.'
     status_code = 200
     
 

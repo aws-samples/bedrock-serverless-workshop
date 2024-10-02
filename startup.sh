@@ -19,12 +19,6 @@ sudo apt install -y jq
 #chmod +x resize.sh
 #./resize.sh 20
 
-#echo "Update node js to version 16"
-#source "$HOME/.nvm/nvm.sh"
-#nvm install 16
-#nvm use 16
-#node --version
-
 echo "Set region"
 export AWS_REGION=$(aws configure get region)
 echo "AWS Region is $AWS_REGION"
@@ -89,7 +83,8 @@ amplify init --yes
 
 
 echo "Add hosting, hit enter key if it prompts for action, use default"
-amplify add hosting parameters.json
+amplify add hosting --parameters parameters.json
+
 
 echo "Publish the amplify project"
 amplify publish --yes

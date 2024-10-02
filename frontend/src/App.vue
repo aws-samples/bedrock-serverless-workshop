@@ -31,8 +31,14 @@
             <li class="nav-item mr-4">
               <span>|</span>
             </li>
-             <li class="nav-item mr-4">
+            <li class="nav-item mr-4">
               <router-link to="/prompt">Prompt Engineering</router-link>
+            </li>
+            <li class="nav-item mr-4">
+              <span>|</span>
+            </li>
+            <li class="nav-item mr-4">
+              <router-link to="/kb">RAG with Knowledge Bases</router-link>
             </li>
             <li class="nav-item mr-4">
               <span>|</span>
