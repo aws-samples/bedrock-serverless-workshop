@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: 
-  SAM template for serverless bedrock workshop.
+  SAM template for serverless bedrock chatbot workshop.
 
 Parameters:
   KendraIndexId:
@@ -368,7 +368,7 @@ Resources:
     Properties:
       CodeUri: lambdas/bedrockFunc
       Handler: cognitouser.lambda_handler
-      Runtime: python3.10
+      Runtime: python3.11
       MemorySize: 2048
       Architectures:
         - x86_64
@@ -421,7 +421,7 @@ Resources:
     Properties:
       Handler: llmfunction.lambda_handler
       CodeUri: lambdas/llmFunctions
-      Runtime: python3.10
+      Runtime: python3.11
       Architectures:
         - x86_64
       Role: !GetAtt LLMExecutionRole.Arn
@@ -431,7 +431,7 @@ Resources:
     Properties:
       Handler: ragfunction.lambda_handler
       CodeUri: lambdas/ragFunctions
-      Runtime: python3.10
+      Runtime: python3.11
       Architectures:
         - x86_64
       Environment:
@@ -445,7 +445,7 @@ Resources:
     Properties:
       Handler: promptfunction.lambda_handler
       CodeUri: lambdas/ragFunctions
-      Runtime: python3.10
+      Runtime: python3.11
       Architectures:
         - x86_64
       Environment:
@@ -459,7 +459,7 @@ Resources:
     Properties:
       Handler: kbfunction.lambda_handler
       CodeUri: lambdas/llmFunctions
-      Runtime: python3.10
+      Runtime: python3.11
       Architectures:
         - x86_64
       Environment:

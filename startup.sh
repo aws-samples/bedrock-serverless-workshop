@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Preparing Cloud9 for project deploymnet"
+echo "Preparing for project deploymnet"
 # Check if 'CFNStackName' is set in the environment variables
 if [ -z "$CFNStackName" ]; then
     echo "Error: 'CFNStackName' environment variable is not set. Please set it and run the script."
@@ -7,17 +7,6 @@ if [ -z "$CFNStackName" ]; then
 fi
 echo "CFN Start up stack name: $CFNStackName"
 
-
-echo "Update ubantu os"
-sudo apt-get update
-
-echo "Install jq for cli query operations"
-sudo apt install -y jq
-
-#echo "Resize the Cloud9 to 20 GB space"
-#cd ~/environment/bedrock-serverless-workshop/tools
-#chmod +x resize.sh
-#./resize.sh 20
 
 echo "Set region"
 export AWS_REGION=$(aws configure get region)
@@ -31,7 +20,7 @@ echo "Export S3 bucket name and Kendra index which are created as part of Startu
 export S3BucketName=$(aws cloudformation describe-stacks --stack-name ${CFNStackName} --query "Stacks[0].Outputs[?OutputKey=='S3BucketName'].OutputValue" --output text)
 export KendraIndexID=$(aws cloudformation describe-stacks --stack-name ${CFNStackName} --query "Stacks[0].Outputs[?OutputKey=='KendraIndexID'].OutputValue" --output text)
 
-export SAMStackName="sam-$CFNStackName"
+export SAMStackName="sam2-$CFNStackName"
 echo $SAMStackName
 
 echo "Copy toml file and replace the parameters"
@@ -68,10 +57,10 @@ export PATH=~/.npm-global/bin:$PATH
 source ~/.profile
 
 #Install Ampliyfy and build frontend
-echo "Install Ampliyfy and build frontend"
-cd ~/environment/bedrock-serverless-workshop/frontend
-npm install -S @vue/cli-service
-npm install -g @aws-amplify/cli
+cd /home/ec2-user/environment/bedrock-serverless-workshop/frontend
+npm i -S @vue/cli-service
+npm i @vue/cli-plugin-babel -D
+npm i -g @aws-amplify/cli
 npm install
 npm run build
 cp ~/.aws/credentials ~/.aws/config
@@ -81,10 +70,8 @@ echo "Amplify initialization"
 mv dist build
 amplify init --yes
 
-
 echo "Add hosting, hit enter key if it prompts for action, use default"
 amplify add hosting --parameters parameters.json
-
 
 echo "Publish the amplify project"
 amplify publish --yes
