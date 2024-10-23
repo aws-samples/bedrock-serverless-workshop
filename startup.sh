@@ -20,7 +20,7 @@ echo "Export S3 bucket name and Kendra index which are created as part of Startu
 export S3BucketName=$(aws cloudformation describe-stacks --stack-name ${CFNStackName} --query "Stacks[0].Outputs[?OutputKey=='S3BucketName'].OutputValue" --output text)
 export KendraIndexID=$(aws cloudformation describe-stacks --stack-name ${CFNStackName} --query "Stacks[0].Outputs[?OutputKey=='KendraIndexID'].OutputValue" --output text)
 
-export SAMStackName="sam2-$CFNStackName"
+export SAMStackName="sam-$CFNStackName"
 echo $SAMStackName
 
 echo "Copy toml file and replace the parameters"
