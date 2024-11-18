@@ -54,7 +54,6 @@ sed -Ei "s|<UserPoolClientId>|${UserPoolClientId}|g" ./frontend/src/main.js
 mkdir ~/.npm-global
 npm config set prefix '~/.npm-global'
 export PATH=~/.npm-global/bin:$PATH
-source ~/.profile
 
 #Install Ampliyfy and build frontend
 cd /home/ec2-user/environment/bedrock-serverless-workshop/frontend
