@@ -56,6 +56,8 @@ npm config set prefix '~/.npm-global'
 export PATH=~/.npm-global/bin:$PATH
 
 #Install Ampliyfy and build frontend
+#this export to fix the npm installation issue
+export UV_USE_IO_URING=0
 cd /home/ec2-user/environment/bedrock-serverless-workshop/frontend
 npm i -S @vue/cli-service
 npm i @vue/cli-plugin-babel -D
