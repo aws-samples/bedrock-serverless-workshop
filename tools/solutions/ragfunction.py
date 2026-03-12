@@ -59,12 +59,18 @@ def lambda_handler(event, context):
     PROMPT_TEMPLATE = 'prompt-engineering/claude-prompt-template.txt'
 
     try:
-        if model_id == 'mistral.mistral-7b-instruct-v0:2':
-            llm = get_mistral_llm(model_id,temperature,max_tokens)
-            PROMPT_TEMPLATE = 'prompt-engineering/mistral-prompt-template.txt'
-        elif model_id == 'meta.llama3-1-8b-instruct-v1:0':
+        if 'anthropic' in model_id:
+            llm = get_claude_llm(model_id,temperature,max_tokens)
+            PROMPT_TEMPLATE = 'prompt-engineering/claude-prompt-template.txt'
+        elif 'amazon.nova' in model_id:
+            llm = get_nova_llm(model_id,temperature,max_tokens)
+            PROMPT_TEMPLATE = 'prompt-engineering/claude-prompt-template.txt'
+        elif 'meta' in model_id:
             llm = get_llama_llm(model_id,temperature,max_tokens)
             PROMPT_TEMPLATE = 'prompt-engineering/llama-prompt-template.txt'
+        elif 'mistral' in model_id:
+            llm = get_mistral_llm(model_id,temperature,max_tokens)
+            PROMPT_TEMPLATE = 'prompt-engineering/mistral-prompt-template.txt'
         else:
             llm = get_claude_llm(model_id,temperature,max_tokens)
             PROMPT_TEMPLATE = 'prompt-engineering/claude-prompt-template.txt'
@@ -169,6 +175,15 @@ def get_claude_llm(model_id, temperature, max_tokens):
         "top_p": 0.95
     }
     llm = ChatBedrock(model_id=model_id, model_kwargs=model_kwargs) 
+    return llm
+
+def get_nova_llm(model_id, temperature, max_tokens):
+    model_kwargs = {
+        "max_tokens": max_tokens,
+        "temperature": temperature, 
+        "top_p": 0.9
+    }
+    llm = ChatBedrock(model_id=model_id, model_kwargs=model_kwargs)
     return llm
 
 def get_llama_llm(model_id, temperature, max_tokens):

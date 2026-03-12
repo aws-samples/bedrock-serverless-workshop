@@ -20,10 +20,14 @@ def lambda_handler(event, context):
     status_code = 200
     
     try:
-        if model_id == 'mistral.mistral-7b-instruct-v0:2':
-            response = invoke_mistral_7b(model_id, prompt, temperature, max_tokens)
-        elif model_id == 'meta.llama3-1-8b-instruct-v1:0':
+        if 'anthropic' in model_id:
+            response = invoke_claude(model_id, prompt, temperature, max_tokens)
+        elif 'amazon.nova' in model_id:
+            response = invoke_nova(model_id, prompt, temperature, max_tokens)
+        elif 'meta' in model_id:
             response = invoke_llama(model_id, prompt, temperature, max_tokens)
+        elif 'mistral' in model_id:
+            response = invoke_mistral(model_id, prompt, temperature, max_tokens)
         else:
             response = invoke_claude(model_id, prompt, temperature, max_tokens)
             
@@ -82,13 +86,46 @@ def invoke_claude(model_id, prompt, temperature, max_tokens):
     except Exception as e:
         raise
         
-def invoke_mistral_7b(model_id, prompt, temperature, max_tokens):
+def invoke_nova(model_id, prompt, temperature, max_tokens):
+    print(f"Invoking Nova model {model_id}")
     try:
-        instruction = f"<s>[INST] {prompt} [/INST]"
         bedrock_runtime_client = boto3.client(service_name="bedrock-runtime", region_name=region)
-
         body = {
-            "prompt": instruction,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": [{"text": prompt}],
+                }
+            ],
+            "inferenceConfig": {
+                "maxTokens": max_tokens,
+                "temperature": temperature,
+                "topP": 0.9
+            }
+        }
+
+        response = bedrock_runtime_client.invoke_model(
+            modelId=model_id, body=json.dumps(body)
+        )
+        response_body = json.loads(response["body"].read())
+        output_message = response_body.get("output", {}).get("message", {})
+        completions = [block["text"] for block in output_message.get("content", [])]
+        print(f"completions: {completions[0]}")
+        return completions[0]
+    except Exception as e:
+        raise
+
+def invoke_mistral(model_id, prompt, temperature, max_tokens):
+    print(f"Invoking Mistral model {model_id}")
+    try:
+        bedrock_runtime_client = boto3.client(service_name="bedrock-runtime", region_name=region)
+        body = {
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
             "max_tokens": max_tokens,
             "temperature": temperature,
         }
@@ -97,28 +134,25 @@ def invoke_mistral_7b(model_id, prompt, temperature, max_tokens):
             modelId=model_id, body=json.dumps(body)
         )
         response_body = json.loads(response["body"].read())
-        outputs = response_body.get("outputs")
-        print(f"response: {outputs}")
-
-        completions = [output["text"] for output in outputs]
-        return completions[0]
+        choices = response_body.get("choices", [])
+        print(f"response: {choices}")
+        return choices[0]["message"]["content"]
     except Exception as e:
         raise
         
 def invoke_llama(model_id, prompt, temperature, max_tokens):
-    print(f"Invoking llam model {model_id}" )
-    print(f"max_tokens {max_tokens}" )
+    print(f"Invoking Llama model {model_id}")
     try:
-        instruction = f"[INST]You are a very intelligent bot with exceptional critical thinking, help me answering below question.[/INST]"
-        total_prompt = f"{instruction}\n{prompt}" 
-        
-        print(f"Prompt template {total_prompt}" )
-
         bedrock_runtime_client = boto3.client(service_name="bedrock-runtime", region_name=region)
         
         body = {
-            "prompt": total_prompt,
-            "max_gen_len": max_tokens,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            "max_tokens": max_tokens,
             "temperature": temperature,
             "top_p": 0.9
         }
@@ -128,6 +162,7 @@ def invoke_llama(model_id, prompt, temperature, max_tokens):
         )
         response_body = json.loads(response["body"].read())
         print(f"response: {response_body}")
-        return response_body ['generation']
+        choices = response_body.get("choices", [])
+        return choices[0]["message"]["content"]
     except Exception as e:
         raise
