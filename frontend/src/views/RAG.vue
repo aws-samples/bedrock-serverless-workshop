@@ -20,11 +20,12 @@
                 <td>
                   <div class="select">
                   <select id="model" name="model">
-                    <option value="anthropic.claude-3-haiku-20240307-v1:0" selected>Claude 3 Haiku</option>
-                      <option value="anthropic.claude-3-5-sonnet-20240620-v1:0">Claude 3.5 Sonnet</option>
-                      <option value="anthropic.claude-3-opus-20240229-v1:0">Claude 3 Opus</option>
-                      <option value="mistral.mistral-7b-instruct-v0:2">Mistral 7B</option>
-                      <option value="meta.llama3-1-8b-instruct-v1:0">Llama 3.1 Instruct 8B</option>
+                    <option value="us.anthropic.claude-sonnet-4-6" selected>Claude Sonnet 4.6</option>
+                      <option value="us.anthropic.claude-haiku-4-5-20251001-v1:0">Claude Haiku 4.5</option>
+                      <option value="us.meta.llama4-scout-17b-instruct-v1:0">Llama 4 Scout 17B</option>
+                      <option value="mistral.mistral-large-3-675b-instruct">Mistral Large 3</option>
+                      <option value="us.amazon.nova-pro-v1:0">Nova Pro</option>
+                      <option value="us.amazon.nova-2-lite-v1:0">Nova 2 Lite</option>
                   </select>
                   </div>
                 </td>
