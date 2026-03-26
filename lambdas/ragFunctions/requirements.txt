@@ -1,4 +1,4 @@
 #This project will require modification to support langchain 0.3.0, till then use this version 0.2.16
-langchain==0.2.16
+langchain==0.3.0
 langchain-community
 langchain-aws
