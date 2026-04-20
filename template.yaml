@@ -501,6 +501,7 @@ Resources:
               - bedrock:GetFoundationModel
               - bedrock:InvokeModel
               - bedrock:InvokeModelWithResponseStream
+              - bedrock:GetInferenceProfile
               - bedrock:ListTagsForResource
               - bedrock:UntagResource
               - bedrock:TagResource

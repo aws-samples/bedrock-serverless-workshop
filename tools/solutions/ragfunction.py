@@ -2,7 +2,7 @@ import os
 import json
 import boto3
 from langchain_community.retrievers import AmazonKendraRetriever
-from langchain_aws import ChatBedrock
+from langchain_aws import ChatBedrockConverse
 from langchain.chains import ConversationalRetrievalChain
 from langchain.memory import ConversationBufferMemory
 from langchain.prompts import PromptTemplate
@@ -62,7 +62,7 @@ def lambda_handler(event, context):
         if 'anthropic' in model_id:
             llm = get_claude_llm(model_id,temperature,max_tokens)
             PROMPT_TEMPLATE = 'prompt-engineering/claude-prompt-template.txt'
-        elif 'amazon.nova' in model_id:
+        elif 'amazon.nova' in model_id or 'nova-2' in model_id:
             llm = get_nova_llm(model_id,temperature,max_tokens)
             PROMPT_TEMPLATE = 'prompt-engineering/claude-prompt-template.txt'
         elif 'meta' in model_id:
@@ -168,41 +168,35 @@ def lambda_handler(event, context):
         }
         
 def get_claude_llm(model_id, temperature, max_tokens):
-    model_kwargs = {
-        "max_tokens": max_tokens,
-        "temperature": temperature, 
-        "top_k": 50, 
-        "top_p": 0.95
-    }
-    llm = ChatBedrock(model_id=model_id, model_kwargs=model_kwargs) 
+    llm = ChatBedrockConverse(
+        model=model_id,
+        temperature=temperature,
+        max_tokens=max_tokens
+    )
     return llm
 
 def get_nova_llm(model_id, temperature, max_tokens):
-    model_kwargs = {
-        "max_tokens": max_tokens,
-        "temperature": temperature, 
-        "top_p": 0.9
-    }
-    llm = ChatBedrock(model_id=model_id, model_kwargs=model_kwargs)
+    llm = ChatBedrockConverse(
+        model=model_id,
+        temperature=temperature,
+        max_tokens=max_tokens
+    )
     return llm
 
 def get_llama_llm(model_id, temperature, max_tokens):
-    model_kwargs = {
-        "max_gen_len": max_tokens,
-        "temperature": temperature, 
-        "top_p": 0.9
-    }
-    llm = ChatBedrock(model_id=model_id, model_kwargs=model_kwargs) 
+    llm = ChatBedrockConverse(
+        model=model_id,
+        temperature=temperature,
+        max_tokens=max_tokens
+    )
     return llm
 
 def get_mistral_llm(model_id, temperature, max_tokens):
-    model_kwargs = { 
-        "max_tokens": max_tokens,
-        "temperature": temperature, 
-        "top_k": 50, 
-        "top_p": 0.9
-    }
-    llm = ChatBedrock(model_id=model_id, model_kwargs=model_kwargs) 
+    llm = ChatBedrockConverse(
+        model=model_id,
+        temperature=temperature,
+        max_tokens=max_tokens
+    )
     return llm
 
 def get_memory():

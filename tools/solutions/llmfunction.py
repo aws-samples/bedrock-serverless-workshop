@@ -22,7 +22,7 @@ def lambda_handler(event, context):
     try:
         if 'anthropic' in model_id:
             response = invoke_claude(model_id, prompt, temperature, max_tokens)
-        elif 'amazon.nova' in model_id:
+        elif 'amazon.nova' in model_id or 'nova-2' in model_id:
             response = invoke_nova(model_id, prompt, temperature, max_tokens)
         elif 'meta' in model_id:
             response = invoke_llama(model_id, prompt, temperature, max_tokens)
@@ -99,8 +99,7 @@ def invoke_nova(model_id, prompt, temperature, max_tokens):
             ],
             "inferenceConfig": {
                 "maxTokens": max_tokens,
-                "temperature": temperature,
-                "topP": 0.9
+                "temperature": temperature
             }
         }
 
@@ -145,16 +144,17 @@ def invoke_llama(model_id, prompt, temperature, max_tokens):
     try:
         bedrock_runtime_client = boto3.client(service_name="bedrock-runtime", region_name=region)
         
+        formatted_prompt = f"""
+<|begin_of_text|><|start_header_id|>user<|end_header_id|>
+{prompt}
+<|eot_id|>
+<|start_header_id|>assistant<|end_header_id|>
+"""
+        
         body = {
-            "messages": [
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ],
-            "max_tokens": max_tokens,
-            "temperature": temperature,
-            "top_p": 0.9
+            "prompt": formatted_prompt,
+            "max_gen_len": max_tokens,
+            "temperature": temperature
         }
 
         response = bedrock_runtime_client.invoke_model(
@@ -162,7 +162,6 @@ def invoke_llama(model_id, prompt, temperature, max_tokens):
         )
         response_body = json.loads(response["body"].read())
         print(f"response: {response_body}")
-        choices = response_body.get("choices", [])
-        return choices[0]["message"]["content"]
+        return response_body.get("generation", "")
     except Exception as e:
         raise
