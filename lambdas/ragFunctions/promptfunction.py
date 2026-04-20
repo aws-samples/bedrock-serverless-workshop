@@ -2,10 +2,8 @@ import os
 import json
 import boto3
 from langchain_community.retrievers import AmazonKendraRetriever
-from langchain_aws import ChatBedrock
-from langchain.memory import ConversationBufferWindowMemory
-from langchain.prompts import PromptTemplate
-from langchain.chains import RetrievalQA
+from langchain_aws import ChatBedrockConverse
+from langchain_core.messages import HumanMessage
 import traceback
 
 # Set up the Kendra client
@@ -26,37 +24,32 @@ def lambda_handler(event, context):
     temperature = event_body["temperature"]
     max_tokens = event_body["max_tokens"]
 
-    response = ''
     status_code = 200
     
     try:
-        llm = get_claude_llm(model_id, temperature, max_tokens)
+        llm = ChatBedrockConverse(
+            model=model_id,
+            temperature=temperature,
+            max_tokens=max_tokens
+        )
 
-        # Initialize the Kendra loader
+        # Retrieve relevant documents from Kendra
         retriever = AmazonKendraRetriever(
             kendra_client=kendra,
             index_id=KENDRA_INDEX_ID
         )
-        claude_prompt = PromptTemplate(
-                template=prompt_template, input_variables=["context","question"]
-        )
+        docs = retriever.get_relevant_documents(question)
+        context_text = "\n\n".join(doc.page_content for doc in docs)
+
+        # Build the final prompt by substituting context and question
+        final_prompt = prompt_template.replace("{context}", context_text).replace("{question}", question)
+        print(f"Final prompt length: {len(final_prompt)}")
+
+        # Invoke the model directly
+        result = llm.invoke([HumanMessage(content=final_prompt)])
+        answer = result.content
+        print(f"Response: {answer}")
         
-        qa = RetrievalQA.from_chain_type(
-            llm=llm,
-            chain_type="stuff",
-            retriever=retriever,
-            return_source_documents=False,
-            chain_type_kwargs={"prompt": claude_prompt}
-        )
-        
-        response = qa(question, return_only_outputs=True)
-        print(response)
-        
-        response_with_metadata = {
-            "answer": response['result']
-        }
-        
-            
         return {
             'statusCode': status_code,
             'headers': {
@@ -64,16 +57,14 @@ def lambda_handler(event, context):
                 'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
                 'Access-Control-Allow-Methods': 'OPTIONS,POST'
             },
-            'body': json.dumps(response_with_metadata)
+            'body': json.dumps({'answer': answer})
         }
 
     except Exception as e:
         print(f"An unexpected error occurred: {str(e)}")
         stack_trace = traceback.format_exc()
         print(f"stack trace: {stack_trace}")
-        print(f"error: {str(e)}")
         
-        response = str(e)
         return {
             'statusCode': status_code,
             'headers': {
@@ -81,25 +72,5 @@ def lambda_handler(event, context):
                 'Access-Control-Allow-Headers': 'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token',
                 'Access-Control-Allow-Methods': 'OPTIONS,POST'
             },
-            'body': json.dumps({'error': response})
+            'body': json.dumps({'error': str(e)})
         }
-        
-def get_claude_llm(model_id, temperature, max_tokens):
-    model_kwargs = {
-        "max_tokens": max_tokens,
-        "temperature": temperature, 
-        "top_k": 50, 
-        "top_p": 1
-    }
-    llm = ChatBedrock(model_id=model_id, model_kwargs=model_kwargs) 
-    return llm
-
-#This is a TODO item, presently the history is not retained between the calls
-def get_memory(): 
-    memory = ConversationBufferWindowMemory(
-                    memory_key="chat_history", 
-                    k=5,
-                    input_key="question",
-                    output_key="answer",
-                    return_messages=True) 
-    return memory
